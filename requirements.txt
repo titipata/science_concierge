@@ -1,0 +1,5 @@
+numpy
+pandas
+unidecode
+nltk
+scikit-learn
