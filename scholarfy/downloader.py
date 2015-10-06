@@ -3,7 +3,9 @@
 import os
 import urllib
 
+
 __all__ = ["download"]
+
 
 def download_files(bucket_path, file_list, download_path):
     """
@@ -22,9 +24,10 @@ def download_files(bucket_path, file_list, download_path):
             print 'Done'
 
 
-def download():
-    """This function downloads data from S3"""
-    file_list = ["pubmed_data.pickle"]
+def download(file_list=["pubmed_data.pickle"]):
+    """
+    Downloads example data from Scholarfy S3 folder
+    """
     bucket_path = "https://s3-us-west-2.amazonaws.com/science-of-science-bucket/scholarfy/"
     current_path = os.path.dirname(os.path.abspath(__file__))
     download_path = os.path.join(current_path, 'pubmed_data')
