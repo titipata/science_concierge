@@ -25,21 +25,22 @@ def get_rocchio_topic(poster_vect, like_posters=(), dislike_posters=(),
     """
     n, m = poster_vect.shape
 
+    if len(like_posters) == 0:
+        topic_pref = np.zeros(m)
+
     if len(like_posters) == 1:
         topic_like = np.vstack(poster_vect[like] for like in like_posters)
         topic_pref = topic_like
-    else:
-        if len(like_posters) > 0:
-            topic_like = np.vstack(poster_vect[like] for like in like_posters)
-        else:
-            topic_like = np.zeros(m)
-        if len(dislike_posters):
+
+    if len(like_posters) > 1:
+        topic_like = np.vstack(poster_vect[like] for like in like_posters)
+        if len(dislike_posters) > 0:
             topic_dislike = np.vstack(poster_vect[like] for dislike in dislike_posters)
         else:
             topic_dislike = np.zeros(m)
-        topic_pref = w_like*topic_like - w_dislike*topic_dislike
+        topic_pref = w_like*topic_like.mean(0) - w_dislike*topic_dislike.mean(0)
 
-    return topic_pref
+    return np.atleast_2d(topic_pref)
 
 
 def get_schedule_rocchio(nbrs_model, poster_vect, like_posters=(), dislike_posters=()):
