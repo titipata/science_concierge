@@ -3,7 +3,8 @@ import pandas as pd
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 
-__all__ = ["build_nearest_neighbors", "get_schedule_rocchio"]
+__all__ = ["build_nearest_neighbors", "get_schedule_rocchio",
+           "get_rocchio_topic"]
 
 
 def build_nearest_neighbors(poster_vect):
@@ -19,6 +20,7 @@ def build_nearest_neighbors(poster_vect):
 def get_rocchio_topic(poster_vect, like_posters=(), dislike_posters=(),
                       w_like=1.8, w_dislike=0.2):
     """
+    New!
     Give poster_vector matrix as numpy array
     and list of like and dislike posters,
     return topic preference using Rocchio algorithm
@@ -26,21 +28,23 @@ def get_rocchio_topic(poster_vect, like_posters=(), dislike_posters=(),
     n, m = poster_vect.shape
 
     if len(like_posters) == 0:
-        topic_pref = np.zeros(m)
-
-    if len(like_posters) == 1:
+        topic_like = np.zeros(m)
+    else:
         topic_like = np.vstack(poster_vect[like] for like in like_posters)
-        topic_pref = topic_like
+        topic_like = topic_like.mean(0)
 
-    if len(like_posters) > 1:
-        topic_like = np.vstack(poster_vect[like] for like in like_posters)
-        if len(dislike_posters) > 0:
-            topic_dislike = np.vstack(poster_vect[like] for dislike in dislike_posters)
-        else:
-            topic_dislike = np.zeros(m)
-        topic_pref = w_like*topic_like.mean(0) - w_dislike*topic_dislike.mean(0)
+    if len(dislike_posters) == 0:
+        topic_dislike = np.zeros(m)
+    else:
+        topic_dislike = np.vstack(poster_vect[dislike] for dislike in dislike_posters)
+        topic_dislike = topic_dislike.mean(0)
 
-    return np.atleast_2d(topic_pref)
+    if len(like_posters) == 1 and len(dislike_posters) == 0:
+        topic_pref = np.atleast_2d(topic_like) # equivalent to nearest neighbor
+    else:
+        topic_pref = np.atleast_2d(w_like*topic_like - w_dislike*topic_dislike)
+
+    return topic_pref
 
 
 def get_schedule_rocchio(nbrs_model, poster_vect, like_posters=(), dislike_posters=()):
