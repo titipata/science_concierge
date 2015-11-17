@@ -1,6 +1,6 @@
-# experiment
-# select posters that are from the same human curated topic
-# see if which features help the search of the topic
+# experiment skeleton code for output figure in publication
+# note that we use data provide by SfN, which you can request through the society
+# from http://www.sfn.org/
 
 import scholarfy as sf
 import pandas as pd
@@ -206,6 +206,37 @@ def compare_components_vs_topic_distance():
             result.append([poster_idx] + [avg_distance] + [n_components_list[n_model]])
 
     result_df = pd.DataFrame(result, columns=['poster_number', 'distance', 'n_components'])
+
+    return result_df
+
+
+def compare_human_topic_distance():
+    """
+    Perform experiment by randomly select two poster with different human curated
+    distance. Then see the relationship between human distance versus topic distance
+    in both keywords space and abstract topic space.
+    """
+    result = []
+    N = len(poster_df) # total number of posters
+    N_trials = 1000
+
+    for n in range(N_trials):
+        poster_idx = np.random.randint(N) # randomly select one poster
+        poster_likes = [poster_idx]
+        # get random poster with distance 1, 2, 3 respectively
+        poster_dist_0 = get_poster_same_topic(poster_idx, poster_df)
+        poster_dist_1, poster_dist_2, poster_dist_3 = get_poster_different_topic(poster_idx, poster_df, n_posters=1)
+
+        poster_vect_abstract = np.atleast_2d(poster_vect[poster_idx])
+        poster_vect_kw = np.atleast_2d(keywords_vect[poster_idx])
+
+        for (dist, poster_dist) in zip(range(0,4), [poster_dist_0, poster_dist_1, poster_dist_2, poster_dist_3]):
+            dist_abstract = np.sum((poster_vect_abstract - poster_vect[poster_dist])**2)
+            dist_keyword = np.sum((poster_vect_kw - keywords_vect[poster_dist])**2)
+            result.append([poster_idx] + [dist] + [dist_abstract] + [dist_keyword])
+
+    result_df = pd.DataFrame(result, columns=['poster_number', 'human_distance',
+                                              'abstact_distance', 'keyword_distance'])
 
     return result_df
 
