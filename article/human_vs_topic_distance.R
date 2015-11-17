@@ -21,7 +21,7 @@ experiments_melt$variable <- revalue(experiments_melt$variable,
 experiments_melt$variable <- factor(experiments_melt$variable,
                                     c('Keyword', 'Scholarfy'))
 
-
+pdf('figures/human_vs_topic_distance.pdf', width=5, height=3)
 ggplot(experiments_melt, aes(x = human_distance, y = value, color=variable))  +
   mean_point +
   mean_line +
@@ -30,3 +30,4 @@ ggplot(experiments_melt, aes(x = human_distance, y = value, color=variable))  +
   ylab('Topic distance (z-score)') +
   xlab('Human Curated Distance') +
   theme_classic()
+dev.off()
