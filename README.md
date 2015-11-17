@@ -2,7 +2,7 @@
 
 a Python repository implementing Rocchio algorithm content-based suggestion
 based on topic distance space using Latent semantic analysis (LSA).
-Science Concierge is an algorithm backend for
+Science Concierge is an algorithm backend for Scholarfy
 [http://www.scholarfy.net/](http://www.scholarfy.net/),
 an automatic itinerary maker for conference goers.
 
@@ -31,7 +31,7 @@ import sys
 sys.path.insert(0, '/path/to/science_concierge/')
 ```
 
-## Example on how to suggest posters
+## Example usage of Science Concierge
 
 Here we can preprocess list of abstracts (`abstracts`) using `preprocess` function.
 Then using `tfidf_vectorizer` to transform abstract to sparse tf-idf matrix.
@@ -44,7 +44,7 @@ import pandas as pd
 import science_concierge as sc
 
 abstracts = ['Sciene of science ...', 'is ...', 'awesome ...']
-abstracts_preprocess = map(lambda abstract: sf.preprocess(abstract), abstracts) # stemming string
+abstracts_preprocess = map(lambda abstract: sc.preprocess(abstract), abstracts) # stemming string
 tfidf_matrix = sc.tfidf_vectorizer(abstracts_preprocess) # convert to tf-idf matrix
 poster_vect = sc.svd_vectorizer(tfidf_matrix, n_components=200, n_iter=150)
 nbrs_model = sc.build_nearest_neighbors(poster_vect)
