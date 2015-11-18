@@ -21,14 +21,14 @@ experiments <- melt(read.csv('data//poster_node_distance.csv'),
                    id.vars = c('poster_number', 'number_recommend'))
 
 experiments$variable <- revalue(experiments$variable, 
-                                c("avg_node_distance"="Scholarfy",
+                                c("avg_node_distance"="Science Concierge",
                                 "avg_node_distance_kw"="Keyword",
                                 "avg_random"="Random"))
 
 experiments$variable <- factor(experiments$variable, 
-                               c('Random', 'Keyword', 'Scholarfy'))
+                               c('Random', 'Keyword', 'Science Concierge'))
 
-pdf('figures/performance_vs_votes.pdf', width=5, height=3)
+pdf('figures/performance_vs_votes.pdf', width=6, height=3)
 ggplot(experiments, 
        aes(x = number_recommend, y = value, color = variable)) + 
   mean_point + 

@@ -15,13 +15,13 @@ experiments$keyword_distance <- scale(experiments$keyword_distance)
 experiments_melt <- melt(experiments, id.vars = c('poster_number', 'human_distance'))
 
 experiments_melt$variable <- revalue(experiments_melt$variable,
-                                    c("abstact_distance"="Scholarfy",
+                                    c("abstact_distance"="Science Concierge",
                                       "keyword_distance"="Keyword"))
 
 experiments_melt$variable <- factor(experiments_melt$variable,
-                                    c('Keyword', 'Scholarfy'))
+                                    c('Keyword', 'Science Concierge'))
 
-pdf('figures/human_vs_topic_distance.pdf', width=5, height=3)
+pdf('figures/human_vs_topic_distance.pdf', width=6, height=3)
 ggplot(experiments_melt, aes(x = human_distance, y = value, color=variable))  +
   mean_point +
   mean_line +
@@ -31,3 +31,7 @@ ggplot(experiments_melt, aes(x = human_distance, y = value, color=variable))  +
   xlab('Human Curated Distance') +
   theme_classic()
 dev.off()
+
+# Spearman correlation
+cor.test(experiments$human_distance, experiments$abstact_distance, method = "spearman")
+cor.test(experiments$human_distance, experiments$keyword_distance, method = "spearman")
