@@ -55,11 +55,11 @@ truncated SVD matrix `poster_vect` to suggest other posters using function
 `get_schedule_rocchio` as follows:
 
 ```python
-all_distances, all_posters_index = get_schedule_rocchio(nbrs_model, poster_vect, like_posters=[10], dislike_posters=[])
+all_distances, all_posters_index = sc.get_schedule_rocchio(nbrs_model, poster_vect, like_posters=[10], dislike_posters=[])
 ```
 
 where `like_posters` is a list of like poster index and `dislike_posters` is for
-list of dislike posters.
+list of dislike posters. `all_posters_index` is the rank of suggested posters.
 
 
 ## Dependencies
@@ -87,6 +87,7 @@ pip install -r requirements.txt
 
 ## License
 
-[The MIT License (MIT)](http://choosealicense.com/licenses/mit/)
+![alt text](https://licensebuttons.net/l/by-nc-sa/3.0/88x31.png)
+[Creative Commons 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
 
 Copyright (c) 2015 Titipat Achakulvisut, Daniel E. Acuna, Tulakan Ruangrong, Konrad Kording
