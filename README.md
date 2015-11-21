@@ -17,7 +17,10 @@ git clone https://github.com/titipata/science_concierge
 
 ## Download example data
 
-To download Pubmed Open Access example data use `download` function,
+We provide `.pickle` file from Pubmed Open Acess Subset from year 2013.
+The pickle file contains following columns:
+`pmc, full_title, abstract, journal_title, publication_year`.
+To download Pubmed Open Access example data use `download` function as follows,
 
 ```python
 import science_concierge
@@ -43,7 +46,8 @@ import numpy as np
 import pandas as pd
 import science_concierge as sc
 
-abstracts = ['Sciene of science ...', 'is ...', 'awesome ...']
+pubmed_df = pd.read_pickle('data/pubmed_example.pickle') # assuming example data is downloaded
+abstracts = list(pubmed_df.abstract)
 abstracts_preprocess = map(lambda abstract: sc.preprocess(abstract), abstracts) # stemming string
 tfidf_matrix = sc.tfidf_vectorizer(abstracts_preprocess) # convert to tf-idf matrix
 poster_vect = sc.svd_vectorizer(tfidf_matrix, n_components=200, n_iter=150)

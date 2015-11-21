@@ -1,4 +1,4 @@
-# Scholarfy: preprocess string using Porter stemmer
+# Science Concierge: preprocess string using Porter stemmer
 
 import re
 import string

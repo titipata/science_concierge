@@ -1,4 +1,4 @@
-# Scholarfy: tf-idf vectorizer and dimensionality reduction
+# Science Concierge: tf-idf vectorizer and dimensionality reduction
 
 from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer

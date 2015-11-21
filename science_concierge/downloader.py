@@ -1,4 +1,4 @@
-# Scholarfy: Data and model downloader
+# Science Concierge: Data and model downloader
 
 import os
 import urllib
@@ -24,11 +24,11 @@ def download_files(bucket_path, file_list, download_path):
             print 'Done'
 
 
-def download(file_list=["pubmed_data.pickle"]):
+def download(file_list=["pubmed_example.pickle"]):
     """
-    Downloads example data from Scholarfy S3 folder
+    Downloads example data from Science Concierge S3 folder
     """
-    bucket_path = "https://s3-us-west-2.amazonaws.com/science-of-science-bucket/scholarfy/"
+    bucket_path = "https://s3-us-west-2.amazonaws.com/science-of-science-bucket/science_concierge/"
     current_path = os.path.dirname(os.path.abspath(__file__))
-    download_path = os.path.join(current_path, 'pubmed_data')
+    download_path = os.path.join(current_path, '..','data')
     download_files(bucket_path, file_list, download_path)

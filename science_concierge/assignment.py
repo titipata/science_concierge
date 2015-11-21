@@ -1,3 +1,5 @@
+# Science Concierge: Rocchio algorithm and nearest neighbors
+
 import os
 import pandas as pd
 import numpy as np
