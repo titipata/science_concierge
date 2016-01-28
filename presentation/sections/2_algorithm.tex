@@ -76,7 +76,7 @@ Original Rocchio Algorithm
 Modified Rocchio Algorithm
 
 \begin{equation*}
-\mathbf{x}_a = (\alpha \cdot \sum_{\mathbf{x}_j \in X_r} \mathbf{x}_j) - (\beta \cdot \sum_{\mathbf{x}_k \in X_{nr}} \mathbf{x}_k)
+\mathbf{x}_a = (\frac{\alpha}{\left| X_{nr} \right|} \cdot \sum_{\mathbf{x}_j \in X_r} \mathbf{x}_j) - (\frac{\beta}{\left| X_{nr} \right|} \cdot \sum_{\mathbf{x}_k \in X_{nr}} \mathbf{x}_k)
 \end{equation*}
 
 use less than 100 ms for each nearest neighbor assignment (for 50k posters)
