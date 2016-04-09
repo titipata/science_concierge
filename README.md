@@ -3,11 +3,13 @@
 a Python repository implementing Rocchio algorithm content-based suggestion
 based on topic distance space using Latent semantic analysis (LSA).
 Science Concierge is an algorithm backend for Scholarfy
-[http://www.scholarfy.net/](http://www.scholarfy.net/),
+[www.scholarfy.net](http://www.scholarfy.net/),
 an automatic itinerary maker for conference goers.
 
 See full article on [Arxiv](http://arxiv.org/abs/1604.01070) or full tex manuscript
-[here](https://github.com/titipata/science_concierge_manuscript).
+[here](https://github.com/titipata/science_concierge_manuscript). You can also see 
+the scale version of Scholarfy to 14.3M articles from Pubmed 
+at [pubmed.scholarfy.net](http://pubmed.scholarfy.net/).
 
 
 ## Usage
