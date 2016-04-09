@@ -40,7 +40,8 @@ sys.path.insert(0, '/path/to/science_concierge/')
 or modify `.bash_profile` by adding these lines
 
 ```bash
-export PYTHONPATH='/PATH/TO/science_concierge:$PYTHONPATH' export PYTHONPATH
+export PYTHONPATH='/PATH/TO/science_concierge:$PYTHONPATH'
+export PYTHONPATH
 ```
 
 
