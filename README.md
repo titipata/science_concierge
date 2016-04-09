@@ -6,6 +6,9 @@ Science Concierge is an algorithm backend for Scholarfy
 [http://www.scholarfy.net/](http://www.scholarfy.net/),
 an automatic itinerary maker for conference goers.
 
+See full article on [Arxiv](http://arxiv.org/abs/1604.01070) or full tex manuscript
+[here](https://github.com/titipata/science_concierge_manuscript).
+
 
 ## Usage
 
