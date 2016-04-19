@@ -2,31 +2,29 @@
 
 import re
 import string
-from nltk.stem.porter import PorterStemmer
 from unidecode import unidecode
-from sklearn.neighbors import NearestNeighbors
+from nltk.stem.porter import PorterStemmer
+from nltk.tokenize import WhitespaceTokenizer
+
 
 __all__ = ["preprocess"]
 
 stemmer = PorterStemmer()
+w_tokenizer = WhitespaceTokenizer()
+punct_re = re.compile('[{}]'.format(re.escape(string.punctuation)))
 
-
-def preprocess(x):
+def preprocess(text):
     """
     Apply Snowball stemmer to string
 
     Parameters
     ----------
-    x : input string
+    text : input string
 
     """
-    x = unidecode(x)
-    punct = string.punctuation
-    punct_re = re.compile('[{}]'.format(re.escape(punct)))
-
-    x = x.lower()
-    x = punct_re.sub(' ', x)
-    new_x = []
-    for token in x.split(' '):
-        new_x.append(stemmer.stem(token))
-    return ' '.join(new_x)
+    text = unidecode(text).lower()
+    text = punct_re.sub(' ', text) # remove punctuation
+    text_stem = []
+    for token in w_tokenizer.tokenize(text):
+        text_stem.append(stemmer.stem(token))
+    return ' '.join(text_stem)

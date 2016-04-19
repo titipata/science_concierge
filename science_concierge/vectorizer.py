@@ -1,10 +1,11 @@
 # Science Concierge: tf-idf vectorizer and dimensionality reduction
 
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.decomposition import TruncatedSVD
-from sklearn.feature_extraction.text import TfidfVectorizer
 
 
-__all__ = ["tfidf_vectorizer", "svd_vectorizer"]
+__all__ = ["tfidf_vectorizer", "count_vectorizer",
+           "svd_vectorizer"]
 
 
 def tfidf_vectorizer(abstract_list, min_df=3, max_df=0.8,
@@ -25,6 +26,26 @@ def tfidf_vectorizer(abstract_list, min_df=3, max_df=0.8,
         return tfidf_matrix, tfidf_model
     else:
         return tfidf_matrix
+
+
+def count_vectorizer(abstract_list, min_df=3, max_df=0.8,
+                     ngram_range=(1, 2), return_model=False):
+    """
+    Transform list of abstracts to count vectorize matrix
+
+    Parameters
+    ----------
+    abstract_list : list of poster abstracts
+
+    """
+    count_model = CountVectorizer(min_df=min_df, max_df=max_df, strip_accents='unicode',
+                                  analyzer='word', token_pattern=r'\w{1,}', ngram_range=ngram_range,
+                                  stop_words='english')
+    count_matrix = count_model.fit_transform(abstract_list)
+    if return_model:
+        return count_matrix, count_model
+    else:
+        return count_matrix
 
 
 def svd_vectorizer(tfidf_matrix, n_components=400,

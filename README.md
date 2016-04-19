@@ -77,7 +77,7 @@ all_distances, all_posters_index = scc.get_schedule_rocchio(nbrs_model, poster_v
 ```
 
 where `like_posters` is a list or tuple of like poster index and `dislike_posters` is for
-list of dislike posters. `all_posters_index` is the rank of suggested posters.
+list of dislike posters. `all_posters_index` is the rank of recommended posters.
 
 
 ## Dependencies
@@ -85,7 +85,7 @@ list of dislike posters. `all_posters_index` is the rank of suggested posters.
 - [numpy](http://www.numpy.org/)
 - [pandas](http://pandas.pydata.org/)
 - [unidecode](https://pypi.python.org/pypi/Unidecode)
-- [nltk](http://www.nltk.org/)
+- [nltk](http://www.nltk.org/) with white space tokenizer and Porter stemmer
 - [regular expression](https://docs.python.org/2/library/re.html)
 - [scikit-learn](http://scikit-learn.org/)
 
