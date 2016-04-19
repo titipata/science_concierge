@@ -7,8 +7,8 @@ Science Concierge is an algorithm backend for Scholarfy
 an automatic itinerary maker for conference goers.
 
 See full article on [Arxiv](http://arxiv.org/abs/1604.01070) or full tex manuscript
-[here](https://github.com/titipata/science_concierge_manuscript). You can also see 
-the scale version of Scholarfy to 14.3M articles from Pubmed 
+[here](https://github.com/titipata/science_concierge_manuscript). You can also see
+the scale version of Scholarfy to 14.3M articles from Pubmed
 at [pubmed.scholarfy.net](http://pubmed.scholarfy.net/).
 
 
@@ -39,7 +39,7 @@ import sys
 sys.path.insert(0, '/path/to/science_concierge/')
 ```
 
-or modify `.bash_profile` by adding these lines
+or modify `.bash_profile` or `.bashrc` by adding path python environment
 
 ```bash
 export PYTHONPATH='/PATH/TO/science_concierge:$PYTHONPATH'
@@ -57,14 +57,14 @@ Now, each poster will be represented as vector with dimension of `n_components`.
 ```python
 import numpy as np
 import pandas as pd
-import science_concierge as sc
+import science_concierge as scc
 
 pubmed_df = pd.read_pickle('data/pubmed_example.pickle') # assuming example data is downloaded
 abstracts = list(pubmed_df.abstract)
-abstracts_preprocess = map(lambda abstract: sc.preprocess(abstract), abstracts) # stemming string
-tfidf_matrix = sc.tfidf_vectorizer(abstracts_preprocess) # convert to tf-idf matrix
-poster_vect = sc.svd_vectorizer(tfidf_matrix, n_components=200, n_iter=150)
-nbrs_model = sc.build_nearest_neighbors(poster_vect)
+abstracts_preprocess = map(lambda abstract: scc.preprocess(abstract), abstracts) # stemming string
+tfidf_matrix = scc.tfidf_vectorizer(abstracts_preprocess) # convert to tf-idf matrix
+poster_vect = scc.svd_vectorizer(tfidf_matrix, n_components=200, n_iter=150)
+nbrs_model = scc.build_nearest_neighbors(poster_vect)
 ```
 
 Now, we can use both trained nearest neighbor model `nbrs_model` and
@@ -72,10 +72,11 @@ truncated SVD matrix `poster_vect` to suggest other posters using function
 `get_schedule_rocchio` as follows:
 
 ```python
-all_distances, all_posters_index = sc.get_schedule_rocchio(nbrs_model, poster_vect, like_posters=[10], dislike_posters=[])
+all_distances, all_posters_index = scc.get_schedule_rocchio(nbrs_model, poster_vect,
+                                                            like_posters=[10, 19], dislike_posters=[])
 ```
 
-where `like_posters` is a list of like poster index and `dislike_posters` is for
+where `like_posters` is a list or tuple of like poster index and `dislike_posters` is for
 list of dislike posters. `all_posters_index` is the rank of suggested posters.
 
 

@@ -17,11 +17,11 @@ def download_files(bucket_path, file_list, download_path):
         # check if file already exists
         file_path = os.path.join(download_path, f)
         if os.path.isfile(file_path):
-            print 'File "%s" already exists' % f
+            print('File "%s" already exists' % f)
         else:
-            print 'Downloading "%s" ...' % f
+            print('Downloading "%s" ...' % f)
             urllib.urlretrieve(bucket_path + f, file_path)
-            print 'Done'
+            print('Done')
 
 
 def download(file_list=["pubmed_example.pickle"]):
