@@ -13,6 +13,7 @@ w_tokenizer = WhitespaceTokenizer()
 
 
 def remove_stop_words(abstract):
+    """Tokenize and remove stop words from abstract"""
     words = w_tokenizer.tokenize(abstract)
     return [w for w in words if w not in stops]
 
@@ -34,4 +35,4 @@ if __name__ == '__main__':
     print('transform vector from Spark to list...')
     vectors_df.vector = vectors_df.vector.map(list) # this takes a lot of time
     print('save dataframe of key and vector to pickle file...')
-    vectors_df.to_pickle('wordvec_df.pickle') # save word vector to
+    vectors_df.to_json('wordvec.json', orient='records') # save word vector to json
