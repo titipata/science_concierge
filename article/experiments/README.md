@@ -9,6 +9,8 @@ each plots is in `data` folder
 You can download trained word vectors from SfN 2015 using
 `science_concierge.download("wordvec.json")` which has dictionary of words and
 their corresponding vectors. Or `science_concierge.download("wordvec_abstract.json")`
-in order to download each abstract vectors.
+in order to download each abstract vectors. Or you can download full pickle file
+containing abstract vectors using LSA and word vectors
+`science_concierge.download("poster_vect_df.pickle")`
 - `topic_comparison.py` is for feature comparison using count vectorize,
 tf-idf matrix, LSA and word vectors.
