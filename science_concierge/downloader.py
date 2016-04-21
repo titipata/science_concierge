@@ -11,6 +11,8 @@ def download_files(bucket_path, file_list, download_path):
     """
     Provide path to s3 bucket, download a file list to download path
     """
+    if isinstance(file_list, basestring):
+        file_list = [file_list] # change to list if input is string
     if not os.path.isdir(download_path):
         os.makedirs(download_path)
     for f in file_list:
