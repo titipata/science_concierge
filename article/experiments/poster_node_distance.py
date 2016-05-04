@@ -2,24 +2,24 @@
 # note that we use data provide by SfN, which you can request through the society
 # from http://www.sfn.org/
 
-import scholarfy as sf
+import science_concierge as scc
 import pandas as pd
 import numpy as np
 
 path_to_file = '' # add path to poster pickle file
 poster_df = pd.read_pickle(path_to_file)
 abstracts = list(poster_df.abstract)
-abstracts_preprocess = map(lambda abstract: sf.preprocess(abstract), abstracts)
+abstracts_preprocess = map(lambda abstract: scc.preprocess(abstract), abstracts)
 
 # poster vector or abstract vector
-tfidf_matrix = sf.tfidf_vectorizer(abstracts_preprocess)
-poster_vect = sf.svd_vectorizer(tfidf_matrix, n_components=200)
-nbrs_model = sf.build_nearest_neighbors(poster_vect)
+tfidf_matrix = scc.tfidf_vectorizer(abstracts_preprocess)
+poster_vect = scc.svd_vectorizer(tfidf_matrix, n_components=200)
+nbrs_model = scc.build_nearest_neighbors(poster_vect)
 
 # keywords vector
-tfidf_matrix_kw = sf.tfidf_vectorizer(poster_df.keywords)
-keywords_vect = sf.svd_vectorizer(tfidf_matrix_kw, n_components=30)
-nbrs_model_kw = sf.build_nearest_neighbors(keywords_vect)
+tfidf_matrix_kw = scc.tfidf_vectorizer(poster_df.keywords)
+keywords_vect = scc.svd_vectorizer(tfidf_matrix_kw, n_components=30)
+nbrs_model_kw = scc.build_nearest_neighbors(keywords_vect)
 
 
 def compute_node_distance(node_1, node_2):
@@ -92,8 +92,8 @@ def compare_node_distance():
         poster_likes = [poster_idx] + poster_idx_same_topic # list of posters with same topic
 
         for j in range(1, n_posters):
-            distance, poster_idx_abs = sf.get_schedule_rocchio(nbrs_model, poster_vect, like_posters=poster_likes[0:j])
-            distance, poster_idx_kw = sf.get_schedule_rocchio(nbrs_model_kw, keywords_vect, like_posters=poster_likes[0:j])
+            distance, poster_idx_abs = scc.get_schedule_rocchio(nbrs_model, poster_vect, like_posters=poster_likes[0:j])
+            distance, poster_idx_kw = scc.get_schedule_rocchio(nbrs_model_kw, keywords_vect, like_posters=poster_likes[0:j])
             poster_idx_random = np.random.randint(N, size=n_suggest) # random pick upall posters
             poster_list = np.vstack((np.vstack((poster_idx_abs.flatten(),
                                                 poster_idx_kw.flatten()))[:, 1:1+n_suggest],
@@ -190,17 +190,17 @@ def compare_components_vs_topic_distance():
     n_posters = np.random.randint(N, size=N_trials)
     n_components_list = [50, 75, 100, 150, 200, 300, 400, 500]
     for n_c in n_components_list:
-        poster_vect = sf.svd_vectorizer(tfidf_matrix, n_components=n_c)
+        poster_vect = scc.svd_vectorizer(tfidf_matrix, n_components=n_c)
         poster_vect_comp.append(poster_vect)
 
     # loop through the model
     for n_model in range(len(n_components_list)):
-        nbrs_model = sf.build_nearest_neighbors(poster_vect_comp[n_model])
+        nbrs_model = scc.build_nearest_neighbors(poster_vect_comp[n_model])
         for n in n_posters:
             poster_idx = n # randomly select one poster (pre-random)
             poster_idx_same_topic = get_poster_same_topic(poster_idx, poster_df, n_posters=5)
             poster_likes = [poster_idx] + poster_idx_same_topic # list of posters with same topic
-            distance, poster_idx_abs = sf.get_schedule_rocchio(nbrs_model, poster_vect_comp[n_model], like_posters=poster_likes[0:1])
+            distance, poster_idx_abs = scc.get_schedule_rocchio(nbrs_model, poster_vect_comp[n_model], like_posters=poster_likes[0:1])
             poster_list = poster_idx_abs.flatten()[1:1+n_suggest]
             avg_distance = np.array([compute_node_distance(poster_df.tree.iloc[poster_idx], poster_df.tree.iloc[idx]) for idx in poster_list]).mean()
             result.append([poster_idx] + [avg_distance] + [n_components_list[n_model]])

@@ -67,7 +67,7 @@ import science_concierge as scc
 
 pubmed_df = pd.read_pickle('data/pubmed_example.pickle') # assuming example data is downloaded
 abstracts = list(pubmed_df.abstract)
-abstracts_preprocess = map(lambda abstract: scc.preprocess(abstract, stem=True), abstracts) # stemming string
+abstracts_preprocess = list(map(lambda abstract: scc.preprocess(abstract, stem=True), abstracts)) # stemming string
 tfidf_matrix = scc.tfidf_vectorizer(abstracts_preprocess) # convert to tf-idf matrix
 poster_vect = scc.svd_vectorizer(tfidf_matrix, n_components=200, n_iter=150)
 nbrs_model = scc.build_nearest_neighbors(poster_vect)
