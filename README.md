@@ -92,6 +92,7 @@ list of dislike posters. `all_posters_index` is the rank of recommended posters.
 - [pandas](http://pandas.pydata.org/)
 - [unidecode](https://pypi.python.org/pypi/Unidecode)
 - [nltk](http://www.nltk.org/) with white space tokenizer and Porter stemmer
+  use `science_concierge.download_nltk()` to download required corpora
 - [regular expression](https://docs.python.org/2/library/re.html)
 - [scikit-learn](http://scikit-learn.org/)
 

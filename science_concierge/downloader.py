@@ -3,9 +3,7 @@
 import os
 import urllib
 
-
 __all__ = ["download"]
-
 
 def download_files(bucket_path, file_list, download_path):
     """
@@ -34,3 +32,11 @@ def download(file_list=["pubmed_example.pickle"]):
     current_path = os.path.dirname(os.path.abspath(__file__))
     download_path = os.path.join(current_path, '..','data')
     download_files(bucket_path, file_list, download_path)
+
+
+def download_nltk(corpora=['punkt']):
+    """
+    Download necessary NLTK copora in this case is 'punkt'
+    """
+    import nltk
+    nltk.download(corpora)

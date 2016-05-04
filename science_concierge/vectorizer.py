@@ -3,10 +3,9 @@
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.decomposition import TruncatedSVD
 
-
-__all__ = ["tfidf_vectorizer", "count_vectorizer",
+__all__ = ["tfidf_vectorizer",
+           "count_vectorizer",
            "svd_vectorizer"]
-
 
 def tfidf_vectorizer(abstract_list, min_df=3, max_df=0.8,
                      ngram_range=(1, 2), return_model=False):

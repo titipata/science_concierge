@@ -6,7 +6,6 @@ from unidecode import unidecode
 from nltk.stem.porter import PorterStemmer
 from nltk.tokenize import WhitespaceTokenizer
 
-
 __all__ = ["preprocess"]
 
 stemmer = PorterStemmer()

@@ -5,9 +5,9 @@ import pandas as pd
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 
-__all__ = ["build_nearest_neighbors", "get_schedule_rocchio",
+__all__ = ["build_nearest_neighbors",
+           "get_schedule_rocchio",
            "get_rocchio_topic"]
-
 
 def build_nearest_neighbors(poster_vect):
     """
