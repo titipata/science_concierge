@@ -1,7 +1,15 @@
+import re
 import numpy as np
-from .preprocess import preprocess
+import string
+from unidecode import unidecode
+from nltk.stem.porter import PorterStemmer
+from nltk.tokenize import WhitespaceTokenizer
 from .vectorizer import tfidf_vectorizer, svd_vectorizer
 from .assignment import build_nearest_neighbors, get_rocchio_topic
+
+stemmer = PorterStemmer()
+w_tokenizer = WhitespaceTokenizer()
+punct_re = re.compile('[{}]'.format(re.escape(string.punctuation)))
 
 
 class ScienceConcierge:
@@ -9,11 +17,11 @@ class ScienceConcierge:
 
     Recommendation class using Latent Semantic Analysis on list of abstracts
     Process workflow are as follows
-    - word tokenize then stemming (optional)
-    - tf-idf matrix
-    - Latent Semantic Analysis (LSA), basically we reduce dimension using
-        truncated SVD technique
-    - Nearest neighbor assignment
+    - Word tokenize and stemming (optional)
+    - Create tf-idf matrix, unigram or bigram recommended
+    - Latent Semantic Analysis (LSA) i.e. reduce dimension of using
+        truncated SVD
+    - Nearest neighbor assignment for recommendation
 
     Parameters
     ----------
@@ -64,20 +72,42 @@ class ScienceConcierge:
         self.n_recommend = n_recommend
         self.save_intermediate = False
 
+    def preprocess(self, text):
+        """
+        Apply Snowball stemmer to string
+
+        Parameters
+        ----------
+        text: str, input string
+        """
+        if text is None:
+            text_preprocess = ''
+        else:
+            text = unidecode(text).lower()
+            text = punct_re.sub(' ', text) # remove punctuation
+            if self.stemming:
+                text_preprocess = [stemmer.stem(token) for token in w_tokenizer.tokenize(text)]
+            else:
+                text_preprocess = w_tokenizer.tokenize(text)
+        return ' '.join(text_preprocess)
+
     def fit(self, docs):
         """
+        Create recommendation vectors and nearest neighbor model
+        from list of documents
+
         Parameters
         ----------
         docs: list of string, list of documents' text or abstracts from papers or
             publications or posters
         """
         if not self.parallel:
-            docs_preprocess = map(preprocess, docs)
+            docs_preprocess = map(self.preprocess, docs)
             docs_preprocess = list(docs)
         else:
             from multiprocessing import Pool
             pool = Pool()
-            docs_preprocess = pool.map(preprocess, docs)
+            docs_preprocess = pool.map(self.preprocess, docs)
 
         # save documents to class
         self.docs = docs
