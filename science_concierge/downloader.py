@@ -5,6 +5,8 @@ import urllib
 
 __all__ = ["download"]
 
+BUCKET_PATH = "https://s3-us-west-2.amazonaws.com/science-of-science-bucket/science_concierge/data/"
+
 def download_files(bucket_path, file_list, download_path):
     """
     Provide path to s3 bucket, download a file list to download path
@@ -24,11 +26,11 @@ def download_files(bucket_path, file_list, download_path):
             print('Done')
 
 
-def download(file_list=["pubmed_example.pickle"]):
+def download(file_list=["pubmed_oa_2013.pickle"]):
     """
     Downloads example data from Science Concierge S3 folder
     """
-    bucket_path = "https://s3-us-west-2.amazonaws.com/science-of-science-bucket/science_concierge/"
+    bucket_path = BUCKET_PATH
     current_path = os.path.dirname(os.path.abspath(__file__))
     download_path = os.path.join(current_path, '..','data')
     download_files(bucket_path, file_list, download_path)

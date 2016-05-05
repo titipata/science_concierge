@@ -46,7 +46,7 @@ class ScienceConcierge:
 
     TO DO
     -----
-    - update nearest neighbor model so that it allows larger scale of documents also
+    - update nearest neighbor model so that it allows larger scale of documents
     - print logging output for preprocessing step
 
     """
@@ -101,6 +101,10 @@ class ScienceConcierge:
         docs: list of string, list of documents' text or abstracts from papers or
             publications or posters
         """
+
+        if isinstance(docs, basestring):
+            docs = [docs]
+
         if not self.parallel:
             docs_preprocess = map(self.preprocess, docs)
             docs_preprocess = list(docs)
@@ -130,7 +134,18 @@ class ScienceConcierge:
 
     def recommend(self, like=list(), dislike=list(), w_like=None, w_dislike=None):
         """
-        Apply Rocchio algorithm to recommend related documents
+        Apply Rocchio algorithm and nearest neighbor to recommend
+        related documents:
+            x_pref = w_like * mean(x_likes) - w_dislike * mean(x_dislikes)
+        see article on how we cross-validate parameters
+
+        Parameters
+        ----------
+        like: list, list of index of liked documents
+        dislike: list, list of index of disliked documents
+        w_like: weight for liked documents, default 1.8 (from cross-validation)
+        w_dislike: weight for disliked documents, default 0.2
+            (we got 0.0 from cross-validation)
         """
         if w_like:
             self.w_like = w_like
@@ -141,6 +156,6 @@ class ScienceConcierge:
         topic_pref = get_rocchio_topic(self.vectors, like, dislike, self.w_like, self.w_dislike)
 
         # do nearest neighbor to suggest related abstract with close topic
-        _, index = self.nbrs_model.kneighbors(topic_pref)
+        _, recommend_index = self.nbrs_model.kneighbors(topic_pref)
 
-        return index.flatten()
+        return recommend_index.flatten()
