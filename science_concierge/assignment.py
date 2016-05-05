@@ -19,7 +19,6 @@ def build_nearest_neighbors(poster_vect, n_recommend=None):
     nbrs_model = NearestNeighbors(n_neighbors=n_recommend).fit(poster_vect)
     return nbrs_model
 
-
 def get_rocchio_topic(poster_vect, like_posters=(), dislike_posters=(),
                       w_like=1.8, w_dislike=0.2):
     """
@@ -57,7 +56,6 @@ def get_rocchio_topic(poster_vect, like_posters=(), dislike_posters=(),
         topic_pref = np.atleast_2d(w_like*topic_like - w_dislike*topic_dislike)
 
     return topic_pref
-
 
 def get_schedule_rocchio(nbrs_model, poster_vect, like_posters=(), dislike_posters=()):
     """

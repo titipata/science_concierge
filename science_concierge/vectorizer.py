@@ -26,7 +26,6 @@ def tfidf_vectorizer(abstract_list, min_df=3, max_df=0.8,
     else:
         return tfidf_matrix
 
-
 def count_vectorizer(abstract_list, min_df=3, max_df=0.8,
                      ngram_range=(1, 2), return_model=False):
     """
@@ -45,7 +44,6 @@ def count_vectorizer(abstract_list, min_df=3, max_df=0.8,
         return count_matrix, count_model
     else:
         return count_matrix
-
 
 def svd_vectorizer(tfidf_matrix, n_components=400,
                    n_iter=150, return_model=False):

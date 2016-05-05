@@ -20,7 +20,7 @@ First, clone the repository.
 $ git clone https://github.com/titipata/science_concierge
 ```
 
-Install the library using `setup.py`, 
+Install the library using `setup.py`,
 
 ```bash
 $ python setup.py develop install
@@ -29,10 +29,11 @@ $ python setup.py develop install
 
 ## Download example data
 
-We provide `.pickle` file from Pubmed Open Acess Subset from year 2013.
+We provide `pickle` file from Pubmed Open Acess Subset from year 2013
+(parse using [pubmed_parser](https://github.com/titipata/pubmed_parser)).
 The pickle file contains following columns:
 `pmc, full_title, abstract, journal_title, publication_year`.
-To download Pubmed Open Access example data use `download` function as follows,
+To download Pubmed Open Access example data use `download` function,
 
 ```python
 import science_concierge
@@ -51,7 +52,7 @@ from science_concierge import ScienceConcierge
 recommend_model = ScienceConcierge(stemming=True, ngram_range=(1,2),
                                    n_components=200, n_recommend=200)
 recommend_model.fit(docs) # input list of documents or abstracts
-recommend_model.recommend(like=[100, 8450], dislike=[]) # index of like/dislike docs
+index = recommend_model.recommend(like=[100, 8450], dislike=[]) # index of like/dislike docs
 docs_recommend = [model.docs[i] for i in index] # recommended documents
 ```
 

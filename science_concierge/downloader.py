@@ -1,16 +1,28 @@
 # Science Concierge: Data and model downloader
 
 import os
-import urllib
+import sys
+
+if sys.version_info[0] == 3:
+    from urllib.request import urlretrieve
+else:
+    from urllib import urlretrieve
 
 __all__ = ["download"]
-
 BUCKET_PATH = "https://s3-us-west-2.amazonaws.com/science-of-science-bucket/science_concierge/data/"
 
 def download_files(bucket_path, file_list, download_path):
     """
     Provide path to s3 bucket, download a file list to download path
+
+    Parameters
+    ----------
+    bucket_path: str, path to s3 bucket
+    file_list: str or list, string or list of file list from s3 bucket
+        we will add list of available files soon
+    download_path: str, local path that we want to put downloaded data
     """
+    basestring = str
     if isinstance(file_list, basestring):
         file_list = [file_list] # change to list if input is string
     if not os.path.isdir(download_path):
@@ -22,9 +34,8 @@ def download_files(bucket_path, file_list, download_path):
             print('File "%s" already exists' % f)
         else:
             print('Downloading "%s" ...' % f)
-            urllib.urlretrieve(bucket_path + f, file_path)
+            urlretrieve(bucket_path + f, file_path)
             print('Done')
-
 
 def download(file_list=["pubmed_oa_2013.pickle"]):
     """
@@ -34,7 +45,6 @@ def download(file_list=["pubmed_oa_2013.pickle"]):
     current_path = os.path.dirname(os.path.abspath(__file__))
     download_path = os.path.join(current_path, '..','data')
     download_files(bucket_path, file_list, download_path)
-
 
 def download_nltk(corpora=['punkt']):
     """
