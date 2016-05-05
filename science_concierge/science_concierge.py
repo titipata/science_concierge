@@ -1,6 +1,7 @@
 import re
 import numpy as np
 import string
+from six import string_types
 from unidecode import unidecode
 from nltk.stem.porter import PorterStemmer
 from nltk.tokenize import WhitespaceTokenizer
@@ -102,7 +103,7 @@ class ScienceConcierge:
             publications or posters
         """
 
-        if isinstance(docs, basestring):
+        if isinstance(docs, string_types):
             docs = [docs]
 
         if not self.parallel:

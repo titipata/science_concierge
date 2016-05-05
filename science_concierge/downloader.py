@@ -2,7 +2,7 @@
 
 import os
 import sys
-
+from six import string_types
 if sys.version_info[0] == 3:
     from urllib.request import urlretrieve
 else:
@@ -22,8 +22,8 @@ def download_files(bucket_path, file_list, download_path):
         we will add list of available files soon
     download_path: str, local path that we want to put downloaded data
     """
-    basestring = str
-    if isinstance(file_list, basestring):
+
+    if isinstance(file_list, string_types):
         file_list = [file_list] # change to list if input is string
     if not os.path.isdir(download_path):
         os.makedirs(download_path)
