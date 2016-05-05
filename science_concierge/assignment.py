@@ -9,13 +9,14 @@ __all__ = ["build_nearest_neighbors",
            "get_schedule_rocchio",
            "get_rocchio_topic"]
 
-def build_nearest_neighbors(poster_vect):
+def build_nearest_neighbors(poster_vect, n_recommend=None):
     """
     Create nearest neighbors model using scikit-learn
     from svd matrix (also called poster vector)
     """
-    n = poster_vect.shape[0]
-    nbrs_model = NearestNeighbors(n_neighbors=n).fit(poster_vect)
+    if n_recommend is None:
+        n_recommend = poster_vect.shape[0]
+    nbrs_model = NearestNeighbors(n_neighbors=n_recommend).fit(poster_vect)
     return nbrs_model
 
 

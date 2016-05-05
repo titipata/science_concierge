@@ -55,35 +55,18 @@ science_concierge.download()
 
 ## Example usage of Science Concierge
 
-Here we can preprocess list of abstracts (`abstracts`) using `preprocess` function.
-Then using `tfidf_vectorizer` to transform abstract to sparse tf-idf matrix.
-Afterward, we can apply Latent Sematic Analysis or truncated SVD to tf-idf matrix.
-Now, each poster will be represented as vector with dimension of `n_components`.
+You can build quick recommendation by importing `ScienceConcierge` class
+then use `fit` method to fit list of documents. Then use `recommend` to recommend
+documents based on like or dislike documents.
 
 ```python
-import numpy as np
-import pandas as pd
-import science_concierge as scc
-
-pubmed_df = pd.read_pickle('data/pubmed_example.pickle') # assuming example data is downloaded
-abstracts = list(pubmed_df.abstract)
-abstracts_preprocess = list(map(lambda abstract: scc.preprocess(abstract, stem=True), abstracts)) # stemming string
-tfidf_matrix = scc.tfidf_vectorizer(abstracts_preprocess) # convert to tf-idf matrix
-poster_vect = scc.svd_vectorizer(tfidf_matrix, n_components=200, n_iter=150)
-nbrs_model = scc.build_nearest_neighbors(poster_vect)
+from science_concierge import ScienceConcierge
+recommend_model = ScienceConcierge(stemming=True, ngram_range=(1,2),
+                                   n_components=200, n_recommend=200)
+recommend_model.fit(docs) # input list of documents or abstracts
+recommend_model.recommend(like=[100, 8450], dislike=[]) # index of like/dislike docs
+docs_recommend = [model.docs[i] for i in index] # recommended documents
 ```
-
-Now, we can use both trained nearest neighbor model `nbrs_model` and
-truncated SVD matrix `poster_vect` to suggest other posters using function
-`get_schedule_rocchio` as follows:
-
-```python
-all_distances, all_posters_index = scc.get_schedule_rocchio(nbrs_model, poster_vect,
-                                                            like_posters=[10, 19], dislike_posters=[])
-```
-
-where `like_posters` is a list or tuple of like poster index and `dislike_posters` is for
-list of dislike posters. `all_posters_index` is the rank of recommended posters.
 
 
 ## Dependencies
