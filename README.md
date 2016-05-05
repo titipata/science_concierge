@@ -20,23 +20,10 @@ First, clone the repository.
 $ git clone https://github.com/titipata/science_concierge
 ```
 
-Install repository using `setup.py`
+Install the library using `setup.py`, 
 
 ```bash
 $ python setup.py develop install
-```
-
-or you can need to insert path to Python environment using `sys` i.e.
-
-```python
-import sys; sys.path.insert(0, '/path/to/science_concierge/')
-```
-
-or directly add path to `.bash_profile`.
-
-```bash
-export PYTHONPATH='/PATH/TO/science_concierge:$PYTHONPATH'
-export PYTHONPATH
 ```
 
 
