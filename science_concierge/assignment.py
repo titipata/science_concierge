@@ -64,5 +64,5 @@ def get_schedule_rocchio(nbrs_model, poster_vect, like_posters=(), dislike_poste
     and nearest neighbor distance (all_distances)
     """
     topic_pref = get_rocchio_topic(poster_vect, like_posters, dislike_posters)
-    all_distances, all_posters_index = nbrs_model.kneighbors(topic_pref)
-    return all_distances, all_posters_index
+    recommend_distance, recommend_index = nbrs_model.kneighbors(topic_pref)
+    return recommend_distance.flatten(), recommend_index.flatten()

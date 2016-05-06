@@ -12,7 +12,7 @@ stemmer = PorterStemmer()
 w_tokenizer = WhitespaceTokenizer()
 punct_re = re.compile('[{}]'.format(re.escape(string.punctuation)))
 
-def preprocess(text, stem=True):
+def preprocess(text, stemming=True):
     """
     Apply Snowball stemmer to string
 
