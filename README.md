@@ -57,7 +57,7 @@ documents based on like or dislike documents.
 import pandas as pd
 from science_concierge import ScienceConcierge
 
-df = pd.read_csv('pubmed_oa_2015.csv')
+df = pd.read_csv('pubmed_oa_2015.csv').fillna('')
 docs = list(df.abstract) # provide list of abstracts
 recommend_model = ScienceConcierge(stemming=True, ngram_range=(1,2),
                                    n_components=200, n_recommend=200)
