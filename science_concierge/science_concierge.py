@@ -81,7 +81,7 @@ class ScienceConcierge:
         ----------
         text: str, input string
         """
-        if text is None:
+        if isinstance(text, (type(None), float)):
             text_preprocess = ''
         else:
             text = unidecode(text).lower()
@@ -90,7 +90,8 @@ class ScienceConcierge:
                 text_preprocess = [stemmer.stem(token) for token in w_tokenizer.tokenize(text)]
             else:
                 text_preprocess = w_tokenizer.tokenize(text)
-        return ' '.join(text_preprocess)
+            text_preprocess = ' '.join(text_preprocess)
+        return text_preprocess
 
     def fit(self, docs):
         """

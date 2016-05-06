@@ -21,13 +21,14 @@ def preprocess(text, stem=True):
     text : input abstract of papers/posters string
     stem : apply stemmer if True, default True
     """
-    if text is None:
-        text_new = ''
+    if isinstance(text, (type(None), float)):
+        text_preprocess = ''
     else:
         text = unidecode(text).lower()
         text = punct_re.sub(' ', text) # remove punctuation
         if stem:
-            text_new = [stemmer.stem(token) for token in w_tokenizer.tokenize(text)]
+            text_preprocess = [stemmer.stem(token) for token in w_tokenizer.tokenize(text)]
         else:
-            text_new = w_tokenizer.tokenize(text)
-    return ' '.join(text_new)
+            text_preprocess = w_tokenizer.tokenize(text)
+        text_preprocess = ' '.join(text_preprocess)
+    return text_preprocess
