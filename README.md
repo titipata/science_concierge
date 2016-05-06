@@ -29,15 +29,21 @@ $ python setup.py develop install
 
 ## Download example data
 
-We provide `pickle` file from Pubmed Open Acess Subset from year 2013
-(parse using [pubmed_parser](https://github.com/titipata/pubmed_parser)).
-The pickle file contains following columns:
-`pmc, full_title, abstract, journal_title, publication_year`.
-To download Pubmed Open Access example data use `download` function,
+We provide example `csv` file from Pubmed Open Acess Subset that you can download and
+play with (we parsed using [pubmed_parser](https://github.com/titipata/pubmed_parser)).
+Each file contains `pmc`, `pmid`, `title`, `abstract`, `publication_year` as column name.
+Use `download` function to download example data,
 
 ```python
 import science_concierge
-science_concierge.download()
+science_concierge.download(['pubmed_oa_2015.csv', 'pubmed_oa_2016.csv'])
+```
+
+We provide `pubmed_oa_{year}.csv` from `{year} = 2007, ..., 2016` (**note** 2007 is
+  all publications before year 2008). Alternative is to use `awscli` to download,
+
+```bash
+$ aws s3 cp s3://science-of-science-bucket/science_concierge/data/ . --recursive
 ```
 
 
@@ -48,7 +54,11 @@ then use `fit` method to fit list of documents. Then use `recommend` to recommen
 documents based on like or dislike documents.
 
 ```python
+import pandas as pd
 from science_concierge import ScienceConcierge
+
+df = pd.read_csv('pubmed_oa_2015.csv')
+docs = list(df.abstract) # provide list of abstracts
 recommend_model = ScienceConcierge(stemming=True, ngram_range=(1,2),
                                    n_components=200, n_recommend=200)
 recommend_model.fit(docs) # input list of documents or abstracts

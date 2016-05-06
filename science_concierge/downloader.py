@@ -37,7 +37,7 @@ def download_files(bucket_path, file_list, download_path):
             urlretrieve(bucket_path + f, file_path)
             print('Done')
 
-def download(file_list=["pubmed_oa_2013.pickle"]):
+def download(file_list=["pubmed_oa_2013.csv"]):
     """
     Downloads example data from Science Concierge S3 folder
     """
