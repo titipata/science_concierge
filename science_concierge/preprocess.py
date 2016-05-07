@@ -26,7 +26,7 @@ def preprocess(text, stemming=True):
     else:
         text = unidecode(text).lower()
         text = punct_re.sub(' ', text) # remove punctuation
-        if stem:
+        if stemming:
             text_preprocess = [stemmer.stem(token) for token in w_tokenizer.tokenize(text)]
         else:
             text_preprocess = w_tokenizer.tokenize(text)

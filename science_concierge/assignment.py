@@ -3,6 +3,7 @@
 import os
 import pandas as pd
 import numpy as np
+import scipy
 from sklearn.neighbors import NearestNeighbors
 
 __all__ = ["build_nearest_neighbors",
@@ -38,22 +39,31 @@ def get_rocchio_topic(poster_vect, like_posters=(), dislike_posters=(),
 
     n, m = poster_vect.shape
 
-    if len(like_posters) == 0:
-        topic_like = np.zeros(m)
+    if scipy.sparse.issparse(poster_vect):
+        a = 1
+        b = 0.8
+        c = 0.2
+        w_like = [a] + [b]*(len(like_posters)-1)
+        likes = [poster_vect[like] for like in like_posters]
+        topic_like = scipy.sparse.vstack([w * t for (w, t) in zip(w_like, likes)])
+        topic_pref = topic_like.sum(axis=0) # in sparse case, use sum of vectors
     else:
-        topic_like = np.vstack(poster_vect[like] for like in like_posters)
-        topic_like = topic_like.mean(0)
+        if len(like_posters) == 0:
+            topic_like = np.zeros(m)
+        else:
+            topic_like = np.vstack(poster_vect[like] for like in like_posters)
+            topic_like = topic_like.mean(0)
 
-    if len(dislike_posters) == 0:
-        topic_dislike = np.zeros(m)
-    else:
-        topic_dislike = np.vstack(poster_vect[dislike] for dislike in dislike_posters)
-        topic_dislike = topic_dislike.mean(0)
+        if len(dislike_posters) == 0:
+            topic_dislike = np.zeros(m)
+        else:
+            topic_dislike = np.vstack(poster_vect[dislike] for dislike in dislike_posters)
+            topic_dislike = topic_dislike.mean(0)
 
-    if len(like_posters) == 1 and len(dislike_posters) == 0:
-        topic_pref = np.atleast_2d(topic_like) # equivalent to nearest neighbor
-    else:
-        topic_pref = np.atleast_2d(w_like*topic_like - w_dislike*topic_dislike)
+        if len(like_posters) == 1 and len(dislike_posters) == 0:
+            topic_pref = np.atleast_2d(topic_like) # equivalent to nearest neighbor
+        else:
+            topic_pref = np.atleast_2d(w_like*topic_like - w_dislike*topic_dislike)
 
     return topic_pref
 
