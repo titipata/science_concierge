@@ -23,14 +23,18 @@ experiments <- melt(read.csv('data/multiple_votes.csv'),
 experiments$variable <- revalue(experiments$variable,
                                 c("avg_node_distance"="tf-idf",
                                 "avg_node_distance_kw"="keyword",
-                                "avg_node_distance_wv"="average word vector",
+                                "avg_node_distance_wv"="word vector",
                                 "avg_node_distance_cv"="term frequency",
                                 "avg_node_distance_le"="log-entropy",
                                 "avg_random"="random"))
 
 experiments$variable <- factor(experiments$variable,
-                               c('term frequency', 'tf-idf', 'log-entropy',
-                                 'average word vector', 'keyword'))
+                               c( 'keyword', 
+                                  'term frequency', 
+                                  'tf-idf', 
+                                  'log-entropy',
+                                  'word vector',
+                                  'random'))
 
 
 pdf('figures/performance_vs_votes.pdf', width=6, height=3)
@@ -44,6 +48,8 @@ ggplot(experiments,
   scale_x_continuous(breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)) +
   coord_cartesian(ylim = c(0, 3)) +
   scale_color_brewer(palette = 6, type = 'qual', name = 'Algorithm') +
-  ylab('Average human curated topic distance') +
-  xlab('Number of votes')
+  ylab('Human topic distance') +
+  xlab('Number of votes') +
+  theme(axis.line.x = element_line(color="black", size = 0.5),
+        axis.line.y = element_line(color="black", size = 0.5))
 dev.off()

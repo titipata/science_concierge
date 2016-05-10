@@ -22,11 +22,11 @@ experiments_melt$variable <- revalue(experiments_melt$variable,
                                       "keyword_distance"="keyword",
                                       "countvec_distance"="term frequency",
                                       "logentropy_distance"="log-entropy",
-                                      "wordvec_distance"="average word vector"))
+                                      "wordvec_distance"="word vector"))
 
 experiments_melt$variable <- factor(experiments_melt$variable,
-                                   c('term frequency', 'tf-idf', 'log-entropy',
-                                     'average word vector', 'keyword'))
+                                   c('keyword', 'term frequency', 'tf-idf', 'log-entropy',
+                                     'word vector'))
 
 pdf('figures/human_vs_topic_distance.pdf', width=6, height=3)
 ggplot(experiments_melt, aes(x = human_distance, y = value, color=variable))  +
@@ -36,9 +36,15 @@ ggplot(experiments_melt, aes(x = human_distance, y = value, color=variable))  +
   scale_color_brewer(palette = 6, type = 'qual', name = 'Algorithm') +
   ylab('Topic distance (z-score)') +
   xlab('Human curated topic distance') +
-  theme_classic()
+  theme_classic() +
+  theme(axis.line.x = element_line(color="black", size = 0.5),
+        axis.line.y = element_line(color="black", size = 0.5))
 dev.off()
 
 # Spearman correlation
-cor.test(experiments$human_distance, experiments$abstact_distance, method = "spearman")
 cor.test(experiments$human_distance, experiments$keyword_distance, method = "spearman")
+cor.test(experiments$human_distance, experiments$countvec_distance, method = "spearman")
+cor.test(experiments$human_distance, experiments$logentropy_distance, method = "spearman")
+cor.test(experiments$human_distance, experiments$tfidf_distance, method = "spearman")
+cor.test(experiments$human_distance, experiments$wordvec_distance, method = "spearman")
+
