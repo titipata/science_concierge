@@ -2,6 +2,8 @@ import numpy as np
 import scipy.sparse as sp
 from numpy import bincount
 from sklearn.preprocessing import normalize
+from sklearn.feature_extraction.text import CountVectorizer
+
 
 class LogEntropyVectorizer:
     """
@@ -65,9 +67,10 @@ class LogEntropyVectorizer:
 
         P = (X * sp.spdiags(1./gf, diags=0, m=n_features, n=n_features)) # probability of word occurence
         p = P.data
-        P.data = 1 + (p * np.log2(p) / np.log2(n_samples))
-        g = np.ravel(P.sum(axis=0))
-        X.data = np.log2(1 + X.data)
+        P.data = (p * np.log2(p) / np.log2(n_samples))
+        g = 1 + np.ravel(P.sum(axis=0))
+        f = np.log2(1 + X.data)
+        X.data = f
         G = sp.spdiags(g, diags=0, m=n_features, n=n_features)
         E = X * G # sparse entropy matrix
 
