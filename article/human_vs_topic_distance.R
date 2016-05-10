@@ -38,7 +38,6 @@ ggplot(experiments_melt, aes(x = human_distance, y = value, color=variable))  +
   xlab('Human curated topic distance') +
   theme_classic()
 dev.off()
-pdf('figures/human_vs_topic_distance.pdf', width=6, height=3)
 
 # Spearman correlation
 cor.test(experiments$human_distance, experiments$abstact_distance, method = "spearman")
