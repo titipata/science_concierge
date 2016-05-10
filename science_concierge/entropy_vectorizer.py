@@ -29,7 +29,9 @@ class LogEntropyVectorizer:
                'cat good shit']
     >> X = model.fit_transform(docs)
 
-    reference: https://en.wikipedia.org/wiki/Latent_semantic_indexing
+    reference:
+        - https://en.wikipedia.org/wiki/Latent_semantic_indexing
+        - http://webpages.ursinus.edu/akontostathis/KontostathisHICSSFinal.pdf
     """
     def __init__(self, lowercase=True, preprocessor=None, tokenizer=None,
                  stop_words=None, token_pattern='(?u)\\b\\w\\w+\\b',
@@ -63,9 +65,9 @@ class LogEntropyVectorizer:
 
         P = (X * sp.spdiags(1./gf, diags=0, m=n_features, n=n_features)) # probability of word occurence
         p = P.data
-        P.data = 1 + (p * np.log(p) / np.log(n_samples))
+        P.data = 1 + (p * np.log2(p) / np.log2(n_samples))
         g = np.ravel(P.sum(axis=0))
-        X.data = np.log(1 + X.data)
+        X.data = np.log2(1 + X.data)
         G = sp.spdiags(g, diags=0, m=n_features, n=n_features)
         E = X * G # sparse entropy matrix
 
