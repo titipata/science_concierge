@@ -9,7 +9,7 @@ mean_point <- stat_summary(fun.y = 'mean', geom = 'point', position = position_d
 mean_line <- stat_summary(fun.y = 'mean', geom = 'line', position = position_dodge(width = 0.0))
 se_error <- stat_summary(fun.data = 'mean_se', geom = 'errorbar', width = 0.05, position = position_dodge(width = 0.0))
 
-experiments <- read.csv('human_vs_topic_distance_entropy.csv')
+experiments <- read.csv('data/human_vs_topic_distance.csv')
 experiments$tfidf_distance <- scale(experiments$tfidf_distance)
 experiments$keyword_distance <- scale(experiments$keyword_distance)
 experiments$wordvec_distance <- scale(experiments$wordvec_distance)

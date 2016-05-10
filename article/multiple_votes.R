@@ -17,7 +17,7 @@ mean_point <- stat_summary(fun.y = 'mean', geom = 'point', position = position_d
 mean_line <- stat_summary(fun.y = 'mean', geom = 'line', position = position_dodge(width = 0.1))
 se_error <- stat_summary(fun.data = 'mean_se', geom = 'errorbar', width = 0.05, position = position_dodge(width = 0.1))
 
-experiments <- melt(read.csv('data//multiple_votes.csv'),
+experiments <- melt(read.csv('data/multiple_votes.csv'),
                    id.vars = c('poster_number', 'number_recommend'))
 
 experiments$variable <- revalue(experiments$variable,
