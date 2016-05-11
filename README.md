@@ -66,6 +66,17 @@ index = recommend_model.recommend(like=[100, 8450], dislike=[]) # index of like/
 docs_recommend = [model.docs[i] for i in index] # recommended documents
 ```
 
+## Log-entropy vectorizer
+
+We also have adds on log-entropy class for calculating log-entropy
+matrix from input documents. Here is an example usage.
+
+```python
+from science_concierge import LogEntropyVectorizer
+l_model = LogEntropyVectorizer(norm=None, ngram_range=(1,2))
+X = l_model.fit_transform(docs) # where docs is list of documents
+```
+
 
 ## Dependencies
 
