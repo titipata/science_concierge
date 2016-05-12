@@ -1,3 +1,4 @@
+import logging
 import re
 import numpy as np
 import string
@@ -11,6 +12,8 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.preprocessing import normalize
 from .assignment import build_nearest_neighbors, get_rocchio_topic
 
+logger = logging.getLogger('scienceconcierge')
+logger.addHandler(logging.StreamHandler())
 
 stemmer = PorterStemmer()
 w_tokenizer = WhitespaceTokenizer()
@@ -91,7 +94,7 @@ class ScienceConcierge:
         self.n_iter = n_iter
         self.algorithm = algorithm
         self.vectors = None
-        self.nbrs_model = None # nearest neighbor model for recommendation
+        self.nbrs_model = None # holder for nearest neighbor model
         self.n_recommend = n_recommend
         self.save = False
 
@@ -119,6 +122,45 @@ class ScienceConcierge:
             text_preprocess = ' '.join(text_preprocess)
         return text_preprocess
 
+    def preprocess_docs(self, docs):
+        """
+        Preprocess string or list of strings
+        """
+        if isinstance(docs, string_types):
+            docs = [docs]
+
+        if self.stemming is True:
+            if not self.parallel:
+                docs_preprocess = list(map(self.preprocess, docs))
+            else:
+                from multiprocessing import Pool
+                pool = Pool()
+                docs_preprocess = pool.map(self.preprocess, docs)
+        else:
+            docs_preprocess = docs
+        return docs_preprocess
+
+    def fit_document_matrix(self, X):
+        """
+        Reduce dimension of sparse matrix X
+        using Latent Semantic Analysis and
+        build nearst neighbor model
+        """
+        n_components = self.n_components
+        n_iter = self.n_iter
+        algorithm = self.algorithm
+        lsa_model = TruncatedSVD(n_components=n_components,
+                                 n_iter=n_iter,
+                                 algorithm=algorithm)
+        # reduce dimension using Latent Semantic Analysis
+        vectors = lsa_model.fit_transform(X)
+
+        # build nearest neighbor model
+        nbrs_model = build_nearest_neighbors(vectors, n_recommend=self.n_recommend)
+        self.nbrs_model = nbrs_model
+
+        return vectors
+
     def fit(self, docs):
         """
         Create recommendation vectors and nearest neighbor model
@@ -140,25 +182,11 @@ class ScienceConcierge:
         norm = self.norm
         ngram_range = self.ngram_range
         analyzer = self.analyzer
-        n_components = self.n_components
-        n_iter = self.n_iter
         stop_words = self.stop_words
 
         # preprocess text
-        if isinstance(docs, string_types):
-            docs = [docs]
+        docs_preprocess = self.preprocess_docs(docs)
         self.docs = docs
-
-        if self.stemming is True:
-            if not self.parallel:
-                docs_preprocess = list(map(self.preprocess, docs))
-            else:
-                from multiprocessing import Pool
-                pool = Pool()
-                docs_preprocess = pool.map(self.preprocess, docs)
-        else:
-            docs_preprocess = docs
-
         if self.save:
             self.docs_preprocess = docs_preprocess
 
@@ -171,14 +199,14 @@ class ScienceConcierge:
                                     stop_words=stop_words)
         elif self.weighting == 'tfidf':
             model = TfidfVectorizer(min_df=min_df, max_df=max_df,
-                                    lowercase=lowercase, norm=None,
+                                    lowercase=lowercase, norm=norm,
                                     strip_accents=strip_accents, analyzer=analyzer,
                                     token_pattern=token_pattern, ngram_range=ngram_range,
                                     use_idf=True, smooth_idf=True, sublinear_tf=True,
                                     stop_words=stop_words)
         elif self.weighting == 'entropy':
             model = LogEntropyVectorizer(min_df=min_df, max_df=max_df,
-                                         lowercase=lowercase, norm=None,
+                                         lowercase=lowercase, norm=norm,
                                          token_pattern=token_pattern,
                                          ngram_range=ngram_range, analyzer=analyzer,
                                          smooth_idf=False,
@@ -188,17 +216,9 @@ class ScienceConcierge:
 
         # text transformation and latent-semantic-analysis
         X = model.fit_transform(docs_preprocess)
-        if self.norm is not None:
-            X = normalize(X, norm=self.norm, copy=False)
-        lsa_model = TruncatedSVD(n_components=n_components,
-                                 n_iter=n_iter,
-                                 algorithm=self.algorithm)
-        vectors = lsa_model.fit_transform(X)
-        self.vectors = vectors
 
-        # compute nearest neighbor model
-        nbrs_model = build_nearest_neighbors(vectors, n_recommend=self.n_recommend)
-        self.nbrs_model = nbrs_model
+        vectors = self.fit_document_matrix(X)
+        self.vectors = vectors
 
         return self
 
@@ -209,7 +229,8 @@ class ScienceConcierge:
 
             x_pref = w_like * mean(x_likes) - w_dislike * mean(x_dislikes)
 
-        see article on how to cross-validate parameters
+        see article on how to cross-validate parameters. Use recommend 
+        after fit method
 
         Parameters
         ----------
@@ -225,7 +246,7 @@ class ScienceConcierge:
         # compute preference vector
         topic_pref = get_rocchio_topic(self.vectors, likes, dislikes, w_like, w_dislike)
 
-        # do nearest neighbor to suggest related abstract with close topic
+        # nearest neighbor to suggest related abstract with close topic
         _, recommend_index = self.nbrs_model.kneighbors(topic_pref)
 
         return recommend_index.flatten()
