@@ -2,9 +2,9 @@ import numpy as np
 import scipy.sparse as sp
 from sklearn.preprocessing import normalize
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.utils.validation import check_is_fitted
 
-
-class LogEntropyVectorizer:
+class LogEntropyVectorizer(CountVectorizer):
     """Log-entropy vectorizer
     adds on for scikit-learn CountVectorizer to
     calculate log-entropy term matrix
@@ -52,24 +52,26 @@ class LogEntropyVectorizer:
                  stop_words=None, token_pattern='(?u)\\b\\w\\w+\\b',
                  ngram_range=(1, 1), analyzer='word', max_df=1.0, min_df=1,
                  norm='l2', smooth_idf=False):
-        self.lowercase = lowercase
-        self.preprocessor = preprocessor
-        self.tokenizer = tokenizer
-        self.stop_words = stop_words
-        self.token_pattern = token_pattern
-        self.ngram_range = ngram_range
-        self.analyzer = analyzer
-        self.max_df = max_df
-        self.min_df = min_df
+
+
+        super(LogEntropyVectorizer, self).__init__(
+            lowercase=lowercase,
+            preprocessor=preprocessor,
+            tokenizer=tokenizer,
+            stop_words=stop_words,
+            token_pattern=token_pattern,
+            ngram_range=ngram_range,
+            analyzer=analyzer,
+            max_df=max_df,
+            min_df=min_df
+        )
+
         self.norm = norm
         self.smooth_idf = smooth_idf
 
-    def fit_transform(self, raw_documents):
-        X = CountVectorizer(lowercase=self.lowercase, preprocessor=self.preprocessor,
-                            tokenizer=self.tokenizer, stop_words=self.stop_words,
-                            token_pattern=self.token_pattern, ngram_range=self.ngram_range,
-                            analyzer=self.analyzer, max_df=self.max_df, min_df=self.min_df
-                           ).fit_transform(raw_documents)
+
+    def fit(self, raw_documents, y=None):
+        X = super(LogEntropyVectorizer, self).fit_transform(raw_documents)
 
         n_samples, n_features = X.shape
         gf = np.ravel(X.sum(axis=0)) # count total number of each words
@@ -84,10 +86,21 @@ class LogEntropyVectorizer:
         g = 1 + np.ravel(P.sum(axis=0))
         f = np.log2(1 + X.data)
         X.data = f
-        G = sp.spdiags(g, diags=0, m=n_features, n=n_features)
-        L = X * G # sparse entropy matrix
+        # global weights
+        self._G = sp.spdiags(g, diags=0, m=n_features, n=n_features)
+        return self
+
+
+    def fit_transform(self, raw_documents, y=None):
+        self.fit(raw_documents)
+        return self.transform(raw_documents)
+
+
+    def transform(self, raw_documents):
+        X = super(LogEntropyVectorizer, self).transform(raw_documents)
+        check_is_fitted(self, '_G', 'global weight vector is not fitted')
+        L = X * self._G  # sparse entropy matrix
 
         if self.norm is not None:
             L = normalize(L, norm=self.norm, copy=False)
-
         return L
