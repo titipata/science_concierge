@@ -1,5 +1,3 @@
-# Science Concierge: preprocess string using Porter stemmer
-
 import re
 import string
 from unidecode import unidecode

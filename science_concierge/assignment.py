@@ -1,5 +1,3 @@
-# Science Concierge: Rocchio algorithm and nearest neighbors
-
 import os
 import pandas as pd
 import numpy as np
@@ -69,13 +67,3 @@ def get_rocchio_topic(poster_vect, likes=(), dislikes=(),
             topic_pref = np.atleast_2d(w_like*topic_like - w_dislike * topic_dislike)
 
     return topic_pref
-
-def get_schedule_rocchio(nbrs_model, poster_vect, likes=(), dislikes=()):
-    """
-    Give list of like and dislike posters,
-    return list of suggested posters (recommend_index)
-    and nearest neighbor distance (recommend_distance)
-    """
-    topic_pref = get_rocchio_topic(poster_vect, like_posters, dislike_posters)
-    recommend_distance, recommend_index = nbrs_model.kneighbors(topic_pref)
-    return recommend_distance.flatten(), recommend_index.flatten()

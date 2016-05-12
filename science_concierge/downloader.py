@@ -1,5 +1,3 @@
-# Science Concierge: Data and model downloader
-
 import os
 import sys
 from six import string_types
