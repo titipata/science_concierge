@@ -16,8 +16,9 @@ def preprocess(text, stemming=True):
 
     Parameters
     ----------
-    text : input abstract of papers/posters string
-    stem : apply stemmer if True, default True
+    text : str, input abstract of papers/posters string
+    stemming : boolean, apply Porter stemmer if True,
+        default True
     """
     if isinstance(text, (type(None), float)):
         text_preprocess = ''
