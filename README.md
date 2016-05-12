@@ -81,10 +81,9 @@ In this case when we have sparse matrix of documents,
 we can use `fit_document_matrix` directly get back recommendation.
 
 ```python
-model = ScienceConcierge(n_components=200, n_recommend=200)
-model.fit_document_matrix(X)
-index = model.recommend(likes=[100, 8450], dislikes=[])
-docs_recommend = [model.docs[i] for i in index[0:10]]
+recommend_model = ScienceConcierge(n_components=200, n_recommend=200)
+recommend_model.fit_document_matrix(X)
+index = recommend_model.recommend(likes=[100, 8450], dislikes=[])
 ```
 
 ## Dependencies
