@@ -45,6 +45,7 @@ class ScienceConcierge:
         weight greater than max_df, default: 0.8
     ngram_range: tuple, parameter for tfidf transformation
         (1, 1) for unigram, (1, 2) for bigram, default (1, 2) i.e. bigram
+    norm: 'l2', 'l1' or None, default: 'l2'
 
     * parameters for dimensionality reduction
     algorithm: str, 'arpack' or 'randomized', default 'arpack'
@@ -136,6 +137,7 @@ class ScienceConcierge:
         lowercase=self.lowercase
         min_df = self.min_df
         max_df = self.max_df
+        norm = self.norm
         ngram_range = self.ngram_range
         analyzer = self.analyzer
         n_components = self.n_components
@@ -169,16 +171,16 @@ class ScienceConcierge:
                                     stop_words=stop_words)
         elif self.weighting == 'tfidf':
             model = TfidfVectorizer(min_df=min_df, max_df=max_df,
-                                    lowercase=lowercase,
+                                    lowercase=lowercase, norm=None,
                                     strip_accents=strip_accents, analyzer=analyzer,
                                     token_pattern=token_pattern, ngram_range=ngram_range,
                                     use_idf=True, smooth_idf=True, sublinear_tf=True,
                                     stop_words=stop_words)
         elif self.weighting == 'entropy':
-            model = LogEntropyVectorizer(lowercase=lowercase,
+            model = LogEntropyVectorizer(min_df=min_df, max_df=max_df,
+                                         lowercase=lowercase, norm=None,
                                          token_pattern=token_pattern,
                                          ngram_range=ngram_range, analyzer=analyzer,
-                                         min_df=min_df, max_df=max_df,
                                          smooth_idf=False,
                                          stop_words=stop_words)
         else:
