@@ -59,17 +59,19 @@ from science_concierge import ScienceConcierge
 
 df = pd.read_csv('pubmed_oa_2016.csv')
 docs = list(df.abstract) # provide list of abstracts
+# select weighting from 'count', 'tfidf', or 'entropy'
 recommend_model = ScienceConcierge(stemming=True, ngram_range=(1,2),
+                                   weighting='entropy', norm=None,
                                    n_components=200, n_recommend=200)
 recommend_model.fit(docs) # input list of documents or abstracts
 index = recommend_model.recommend(like=[100, 8450], dislike=[]) # index of like/dislike docs
-docs_recommend = [model.docs[i] for i in index] # recommended documents
+docs_recommend = [model.docs[i] for i in index[0:10]] # recommended documents
 ```
 
 ## Log-entropy vectorizer
 
 We also have adds on log-entropy class for calculating log-entropy
-matrix from input documents. Here is an example usage.
+matrix from input list of documents. Here is an example usage.
 
 ```python
 from science_concierge import LogEntropyVectorizer
