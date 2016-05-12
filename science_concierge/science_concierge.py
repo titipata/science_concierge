@@ -154,12 +154,13 @@ class ScienceConcierge:
                                  algorithm=algorithm)
         # reduce dimension using Latent Semantic Analysis
         vectors = lsa_model.fit_transform(X)
+        self.vectors = vectors
 
         # build nearest neighbor model
         nbrs_model = build_nearest_neighbors(vectors, n_recommend=self.n_recommend)
         self.nbrs_model = nbrs_model
 
-        return vectors
+        return self
 
     def fit(self, docs):
         """
@@ -217,8 +218,8 @@ class ScienceConcierge:
         # text transformation and latent-semantic-analysis
         X = model.fit_transform(docs_preprocess)
 
-        vectors = self.fit_document_matrix(X)
-        self.vectors = vectors
+        # fit documents matrix from sparse matrix
+        self.fit_document_matrix(X)
 
         return self
 
@@ -229,7 +230,7 @@ class ScienceConcierge:
 
             x_pref = w_like * mean(x_likes) - w_dislike * mean(x_dislikes)
 
-        see article on how to cross-validate parameters. Use recommend 
+        see article on how to cross-validate parameters. Use recommend
         after fit method
 
         Parameters

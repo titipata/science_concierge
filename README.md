@@ -11,7 +11,6 @@ presentation [here](https://github.com/titipata/science_concierge_manuscript). Y
 the scale version of Scholarfy to 14.3M articles from Pubmed
 at [pubmed.scholarfy.net](http://pubmed.scholarfy.net/).
 
-
 ## Usage
 
 First, clone the repository.
@@ -25,7 +24,6 @@ Install the library using `setup.py`,
 ```bash
 $ python setup.py develop install
 ```
-
 
 ## Download example data
 
@@ -64,7 +62,7 @@ recommend_model = ScienceConcierge(stemming=True, ngram_range=(1,2),
                                    weighting='entropy', norm=None,
                                    n_components=200, n_recommend=200)
 recommend_model.fit(docs) # input list of documents or abstracts
-index = recommend_model.recommend(like=[100, 8450], dislike=[]) # index of like/dislike docs
+index = recommend_model.recommend(likes=[100, 8450], dislikes=[]) # index of like/dislike docs
 docs_recommend = [model.docs[i] for i in index[0:10]] # recommended documents
 ```
 
@@ -79,6 +77,15 @@ l_model = LogEntropyVectorizer(norm=None, ngram_range=(1,2))
 X = l_model.fit_transform(docs) # where docs is list of documents
 ```
 
+In this case when we have sparse matrix of documents,
+we can use `fit_document_matrix` directly get back recommendation.
+
+```python
+model = ScienceConcierge(n_components=200, n_recommend=200)
+model.fit_document_matrix(X)
+index = model.recommend(likes=[100, 8450], dislikes=[])
+docs_recommend = [model.docs[i] for i in index[0:10]]
+```
 
 ## Dependencies
 
