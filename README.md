@@ -58,9 +58,10 @@ from science_concierge import ScienceConcierge
 df = pd.read_csv('pubmed_oa_2016.csv')
 docs = list(df.abstract) # provide list of abstracts
 # select weighting from 'count', 'tfidf', or 'entropy'
-recommend_model = ScienceConcierge(stemming=True, ngram_range=(1,2),
+recommend_model = ScienceConcierge(stemming=True, ngram_range=(1,1),
                                    weighting='entropy', norm=None,
-                                   n_components=200, n_recommend=200)
+                                   n_components=200, n_recommend=200,
+                                   verbose=True)
 recommend_model.fit(docs) # input list of documents or abstracts
 index = recommend_model.recommend(likes=[100, 8450], dislikes=[]) # index of like/dislike docs
 docs_recommend = [recommend_model.docs[i] for i in index[0:10]] # recommended documents

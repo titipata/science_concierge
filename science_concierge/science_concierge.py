@@ -159,12 +159,15 @@ class ScienceConcierge:
 
         if self.stemming is True:
             if not self.parallel:
+                logger.info('preprocess %i documents without multiprocessing' % len(docs))
                 docs_preprocess = list(map(self.preprocess, docs))
             else:
                 from multiprocessing import Pool
                 pool = Pool()
+                logger.info('preprocess %i documents with %i workers' % (len(docs), pool._processes))
                 docs_preprocess = pool.map(self.preprocess, docs)
         else:
+            logger.info('no prepocess function apply')
             docs_preprocess = docs
         return docs_preprocess
 
@@ -214,7 +217,6 @@ class ScienceConcierge:
         stop_words = self.stop_words
 
         # preprocess text
-        logger.info('preprocess documents...')
         docs_preprocess = self.preprocess_docs(docs)
         self.docs = docs
         if self.save:
@@ -242,14 +244,14 @@ class ScienceConcierge:
                                          smooth_idf=False,
                                          stop_words=stop_words)
         else:
-            logger.error('Choose one weighting scheme from count, tfidf or entropy')
+            logger.error('choose one weighting scheme from count, tfidf or entropy')
 
         # text transformation and latent-semantic-analysis
-        logger.info('apply %s weighting to documents...' % self.weighting)
+        logger.info('apply %s weighting to documents' % self.weighting)
         X = model.fit_transform(docs_preprocess)
 
         # fit documents matrix from sparse matrix
-        logger.info('perform Latent Semantic Analysis with %d components...' % self.n_components)
+        logger.info('perform Latent Semantic Analysis with %i components' % self.n_components)
         self.fit_document_matrix(X)
 
         return self
