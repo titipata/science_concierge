@@ -3,7 +3,6 @@ import scipy.sparse as sp
 from sklearn.neighbors import NearestNeighbors
 
 __all__ = ["build_nearest_neighbors",
-           "get_schedule_rocchio",
            "get_rocchio_topic"]
 
 

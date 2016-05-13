@@ -7,10 +7,10 @@ from unidecode import unidecode
 from nltk.stem.porter import PorterStemmer
 from nltk.tokenize import WhitespaceTokenizer
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from .entropy_vectorizer import LogEntropyVectorizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.preprocessing import normalize
-from .assignment import build_nearest_neighbors, get_rocchio_topic
+from .vectorizer import LogEntropyVectorizer
+from .recommend import build_nearest_neighbors, get_rocchio_topic
 
 logger = logging.getLogger('scienceconcierge')
 logger.addHandler(logging.StreamHandler())
@@ -18,6 +18,32 @@ logger.addHandler(logging.StreamHandler())
 stemmer = PorterStemmer()
 w_tokenizer = WhitespaceTokenizer()
 punct_re = re.compile('[{}]'.format(re.escape(string.punctuation)))
+
+
+def set_log_level(verbose):
+    """Convenience function for setting the log level.
+    Parameters
+    ----------
+    verbose : bool, str, int, or None
+        The verbosity of messages to print. If a str, it can be either DEBUG,
+        INFO, WARNING, ERROR, or CRITICAL. Note that these are for
+        convenience and are equivalent to passing in logging.DEBUG, etc.
+        For bool, True is the same as 'INFO', False is the same as 'WARNING'.
+    """
+    if isinstance(verbose, bool):
+        if verbose is True:
+            verbose = 'INFO'
+        else:
+            verbose = 'WARNING'
+    if isinstance(verbose, str):
+        verbose = verbose.upper()
+        logging_types = dict(DEBUG=logging.DEBUG, INFO=logging.INFO,
+                             WARNING=logging.WARNING, ERROR=logging.ERROR,
+                             CRITICAL=logging.CRITICAL)
+        if verbose not in logging_types:
+            raise ValueError('verbose must be of a valid type')
+        verbose = logging_types[verbose]
+    logger.setLevel(verbose)
 
 
 class ScienceConcierge:
@@ -41,7 +67,7 @@ class ScienceConcierge:
         to abstract text, default: True
 
     * parameters for term frequenct weighting scheme
-    weighting: str, options from 'count', 'tfidf', 'entropy'
+    weighting: str, options from ['count', 'tfidf', 'entropy']
     min_df: int or float [0.0, 1.0] ignore term that appear less than min_df or has
         weight less than min_df, default: 3
     max_df: int or float [0.0, 1.0] ignore term that appear more than max_df or has
@@ -74,7 +100,8 @@ class ScienceConcierge:
                  min_df=3, max_df=0.8, ngram_range=(1,2),
                  algorithm='arpack',
                  n_components=200, n_iter=150,
-                 n_recommend=None, save=False):
+                 n_recommend=None, save=False,
+                 verbose=False):
 
         self.docs = None
         self.docs_preprocess = None
@@ -97,6 +124,7 @@ class ScienceConcierge:
         self.nbrs_model = None # holder for nearest neighbor model
         self.n_recommend = n_recommend
         self.save = False
+        set_log_level(verbose)
 
     def preprocess(self, text):
         """
@@ -177,7 +205,7 @@ class ScienceConcierge:
         weighting = self.weighting
         strip_accents = self.strip_accents
         token_pattern = self.token_pattern
-        lowercase=self.lowercase
+        lowercase = self.lowercase
         min_df = self.min_df
         max_df = self.max_df
         norm = self.norm
@@ -186,6 +214,7 @@ class ScienceConcierge:
         stop_words = self.stop_words
 
         # preprocess text
+        logger.info('preprocess documents...')
         docs_preprocess = self.preprocess_docs(docs)
         self.docs = docs
         if self.save:
@@ -213,12 +242,14 @@ class ScienceConcierge:
                                          smooth_idf=False,
                                          stop_words=stop_words)
         else:
-            print('Choose weighting scheme from count, tfidf or entropy')
+            logger.error('Choose one weighting scheme from count, tfidf or entropy')
 
         # text transformation and latent-semantic-analysis
+        logger.info('apply %s weighting to documents...' % self.weighting)
         X = model.fit_transform(docs_preprocess)
 
         # fit documents matrix from sparse matrix
+        logger.info('perform Latent Semantic Analysis...')
         self.fit_document_matrix(X)
 
         return self
@@ -235,8 +266,8 @@ class ScienceConcierge:
 
         Parameters
         ----------
-        like: list, list of index of liked documents
-        dislike: list, list of index of disliked documents
+        likes: list, list of index of liked documents
+        dislikes: list, list of index of disliked documents
         w_like: float, weight for liked documents, default 1.8 (from cross-validation)
         w_dislike: float, weight for disliked documents, default 0.2
             (we got 0.0 from cross-validation)

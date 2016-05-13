@@ -7,7 +7,7 @@ if sys.version_info[0] == 3:
 else:
     from urllib import urlretrieve
 
-__all__ = ["download"]
+__all__ = ["download", "download_nltk"]
 BUCKET_PATH = "https://s3-us-west-2.amazonaws.com/science-of-science-bucket/science_concierge/data/"
 
 
