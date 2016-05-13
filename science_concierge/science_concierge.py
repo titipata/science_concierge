@@ -117,8 +117,8 @@ class ScienceConcierge:
         self.stop_words = 'english'
         self.lowercase = lowercase
         self.norm = norm
-        self.n_components = n_components
-        self.n_iter = n_iter
+        self.n_components = int(n_components)
+        self.n_iter = int(n_iter)
         self.algorithm = algorithm
         self.vectors = None
         self.nbrs_model = None # holder for nearest neighbor model
@@ -249,7 +249,7 @@ class ScienceConcierge:
         X = model.fit_transform(docs_preprocess)
 
         # fit documents matrix from sparse matrix
-        logger.info('perform Latent Semantic Analysis...')
+        logger.info('perform Latent Semantic Analysis with %d components...' % self.n_components)
         self.fit_document_matrix(X)
 
         return self
