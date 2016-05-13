@@ -1,1 +1,1 @@
-from hkm_nn import *
+from .hkm_nn import HKMNode, HKMNearestNeighbor

@@ -1,10 +1,10 @@
+import os
+import joblib
+import numpy as np
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.neighbors import NearestNeighbors
 from copy import copy
-import numpy as np
 from cachetools import cached, LRUCache
-import os
-import joblib
 
 
 __all__ = ['HKMNode', 'HKMNearestNeighbor']
@@ -21,8 +21,9 @@ class HKMNode:
 
 
 class HKMNearestNeighbor:
-    def __init__(self, branching_factor, max_depth, leaf_size, batch_size=1000, verbose=0):
-        """A nearest neighbor algorithm based on a hierarchical k-means 
+    def __init__(self, branching_factor, max_depth,
+                 leaf_size, batch_size=1000, verbose=False):
+        """A nearest neighbor algorithm based on a hierarchical k-means
         algorithm with `branching_factor` and a maximum depth of `max_depth`"""
         self.branching_factor = branching_factor
         self.max_depth = max_depth
@@ -38,14 +39,14 @@ class HKMNearestNeighbor:
     def fit(self, data):
         """
         Runs fitting procedure on
-        :param data: matrix with all data
+        data: ndarray, array or matrix with all data
         """
         if self.verbose:
-            print 'Creating root node'
+            print('Creating root node')
 
         self.root = self._create_node(data, np.arange(data.shape[0]), 1)
         if self.verbose:
-            print 'Finished'
+            print('Finished')
 
     def _create_node(self, data, original_idx, current_depth):
         """Create an HKMNode and recursevily ask to create nodes if maximum
@@ -66,7 +67,7 @@ class HKMNearestNeighbor:
             # cluster with mini-batch K-means
             clustering = MiniBatchKMeans(n_clusters=self.branching_factor,
                                          batch_size=self.batch_size)
-            # # get one element from each partition
+            # get one element from each partition
             labels = clustering.fit_predict(data)
 
             node = HKMNode(clustering=clustering)
@@ -128,7 +129,6 @@ class HKMNearestNeighbor:
 
     def _get_nn_model(self, tree_path):
         file_name = os.path.join(self.model_dir, '_'.join(map(str, tree_path)) + '.pickle')
-#         return pickle.load(open(file_name, 'r'))
         return joblib.load(file_name)
 
     def kneighbors(self, x):
@@ -145,7 +145,10 @@ class HKMNearestNeighbor:
     def save_model(self, model_dir):
         """
         Save the model to `model_dir`
-        :param model_dir location where model is saved
+
+        Parameters
+        ----------
+        model_dir: str, location where model is saved
         """
         if os.path.isdir(model_dir):
             raise Exception('Folder already exists')
@@ -164,20 +167,15 @@ class HKMNearestNeighbor:
                                                     model_dir)
         # save skeleton
         file_name = os.path.join(model_dir, 'skeleton.pickle')
-#         pickle.dump(new_hkmnn_model, open(file_name, 'w'), protocol=2)
         joblib.dump(new_hkmnn_model, file_name, protocol=2)
 
     def _recursive_save(self, node, current_depth, tree_path, model_dir):
-        """Create intermediate nodes of the tree and save leaves
         """
-        # if 
+        Create intermediate nodes of the tree and save leaves
+        """
         if node.children is None:
             new_node = HKMNode(original_idx=node.original_idx)
             file_name = os.path.join(model_dir, '_'.join(map(str, tree_path)) + '.pickle')
-
-#             pickle.dump(node.nn_model, 
-#                         open(file_name, 'w'),
-#                         protocol=2)
             joblib.dump(node.nn_model,
                         file_name,
                         protocol=2)
@@ -226,13 +224,12 @@ class HKMNearestNeighbor:
         """
         # load skeleton
         file_name = os.path.join(model_dir, 'skeleton.pickle')
-#         new_hkmnn_model = pickle.load(open(file_name, 'r'))
         new_hkmnn_model = joblib.load(file_name)
         new_hkmnn_model.model_dir = model_dir
         # compute inverse index
         new_hkmnn_model.inverse_idx = new_hkmnn_model._get_idx_paths()
 
-        # cache calls to get_vector and _get_nn_model        
+        # cache calls to get_vector and _get_nn_model
         get_nn_model_cache = LRUCache(maxsize=leaf_cache_size)
         get_vector_cache = LRUCache(maxsize=points_cache_size)
         new_hkmnn_model.get_vector = cached(get_vector_cache)(new_hkmnn_model.get_vector)

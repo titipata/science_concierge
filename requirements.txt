@@ -3,3 +3,5 @@ pandas
 unidecode
 nltk
 scikit-learn
+cachetools
+joblib
