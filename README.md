@@ -1,10 +1,10 @@
 # Science Concierge
 
-a Python repository implementing Rocchio algorithm content-based suggestion
-based on topic distance space using Latent semantic analysis (LSA).
-Science Concierge is an algorithm backend for Scholarfy
+a Python repository for content-based recommendation
+based on Latent semantic analysis (LSA) topic distance and Rocchio Algorithm.
+Science Concierge is an backend algorithm for Scholarfy
 [www.scholarfy.net](http://www.scholarfy.net/),
-an automatic itinerary maker for conference goers.
+an automatic scheduler for conference.
 
 See full article on [Arxiv](http://arxiv.org/abs/1604.01070) or full tex manuscript and
 presentation [here](https://github.com/titipata/science_concierge_manuscript). You can also see
@@ -63,7 +63,7 @@ recommend_model = ScienceConcierge(stemming=True, ngram_range=(1,2),
                                    n_components=200, n_recommend=200)
 recommend_model.fit(docs) # input list of documents or abstracts
 index = recommend_model.recommend(likes=[100, 8450], dislikes=[]) # index of like/dislike docs
-docs_recommend = [model.docs[i] for i in index[0:10]] # recommended documents
+docs_recommend = [recommend_model.docs[i] for i in index[0:10]] # recommended documents
 ```
 
 ## Log-entropy vectorizer
@@ -99,7 +99,7 @@ index = recommend_model.recommend(likes=[100, 8450], dislikes=[])
 To install all dependencies we provide `requirements.txt` where we can install using `pip`,
 
 ```bash
-pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 
 ## Members
@@ -112,7 +112,6 @@ pip install -r requirements.txt
 
 ## License
 
-![alt text](https://licensebuttons.net/l/by-nc-sa/3.0/88x31.png)
-[Creative Commons 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
+[![License](https://licensebuttons.net/l/by-nc-sa/3.0/88x31.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
 
 Copyright (c) 2015 Titipat Achakulvisut, Daniel E. Acuna, Tulakan Ruangrong, Konrad Kording
