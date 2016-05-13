@@ -176,6 +176,11 @@ class ScienceConcierge:
         Reduce dimension of sparse matrix X
         using Latent Semantic Analysis and
         build nearst neighbor model
+
+        Parameters
+        ----------
+        X: sparse csr matrix, sparse term frequency matrix or
+            others weighting matrix from documents
         """
         n_components = self.n_components
         n_iter = self.n_iter
@@ -273,6 +278,10 @@ class ScienceConcierge:
         w_like: float, weight for liked documents, default 1.8 (from cross-validation)
         w_dislike: float, weight for disliked documents, default 0.2
             (we got 0.0 from cross-validation)
+
+        Returns
+        -------
+        recommend_index: 1d array, array of recommended index from documents
         """
         self.w_like = w_like
         self.w_dislike = w_dislike

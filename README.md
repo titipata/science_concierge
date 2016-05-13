@@ -79,7 +79,7 @@ X = l_model.fit_transform(docs) # where docs is list of documents
 ```
 
 In this case when we have sparse matrix of documents,
-we can use `fit_document_matrix` directly get back recommendation.
+we can use `fit_document_matrix` method directly.
 
 ```python
 recommend_model = ScienceConcierge(n_components=200, n_recommend=200)
@@ -92,7 +92,7 @@ index = recommend_model.recommend(likes=[100, 8450], dislikes=[])
 - [numpy](http://www.numpy.org/)
 - [pandas](http://pandas.pydata.org/)
 - [unidecode](https://pypi.python.org/pypi/Unidecode)
-- [nltk](http://www.nltk.org/) with white space tokenizer and Porter stemmer
+- [nltk](http://www.nltk.org/) with white space tokenizer and Porter stemmer, <br>
   use `science_concierge.download_nltk()` to download required corpora
 - [regular expression](https://docs.python.org/2/library/re.html)
 - [scikit-learn](http://scikit-learn.org/)
