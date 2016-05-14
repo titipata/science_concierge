@@ -55,16 +55,17 @@ documents based on like or dislike documents.
 import pandas as pd
 from science_concierge import ScienceConcierge
 
-df = pd.read_csv('pubmed_oa_2016.csv')
+df = pd.read_csv('pubmed_oa_2016.csv', encoding='utf-8')
 docs = list(df.abstract) # provide list of abstracts
+titles = list(df.title) # titles
 # select weighting from 'count', 'tfidf', or 'entropy'
 recommend_model = ScienceConcierge(stemming=True, ngram_range=(1,1),
                                    weighting='entropy', norm=None,
                                    n_components=200, n_recommend=200,
                                    verbose=True)
 recommend_model.fit(docs) # input list of documents or abstracts
-index = recommend_model.recommend(likes=[100, 8450], dislikes=[]) # index of like/dislike docs
-docs_recommend = [recommend_model.docs[i] for i in index[0:10]] # recommended documents
+index = recommend_model.recommend(likes=[10000], dislikes=[]) # index of like/dislike docs
+docs_recommend = [titles[i] for i in index[0:10]] # recommended documents
 ```
 
 ## Log-entropy vectorizer
@@ -84,7 +85,7 @@ we can use `fit_document_matrix` method directly.
 ```python
 recommend_model = ScienceConcierge(n_components=200, n_recommend=200)
 recommend_model.fit_document_matrix(X)
-index = recommend_model.recommend(likes=[100, 8450], dislikes=[])
+index = recommend_model.recommend(likes=[10000], dislikes=[]) # i love this recommended result
 ```
 
 ## Dependencies
@@ -98,6 +99,7 @@ index = recommend_model.recommend(likes=[100, 8450], dislikes=[])
 - [scikit-learn](http://scikit-learn.org/)
 - [cachetools](http://pythonhosted.org/cachetools/)
 - [joblib](http://pythonhosted.org/joblib/)
+- [pathos](https://github.com/uqfoundation/pathos)
 
 To install all dependencies we provide `requirements.txt` where we can install using `pip`,
 
