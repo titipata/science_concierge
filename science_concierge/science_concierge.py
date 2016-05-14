@@ -1,4 +1,5 @@
 import logging
+import sys
 import re
 import numpy as np
 import string
@@ -162,9 +163,16 @@ class ScienceConcierge:
                 logger.info('preprocess %i documents without multiprocessing' % len(docs))
                 docs_preprocess = list(map(self.preprocess, docs))
             else:
-                from multiprocessing import Pool
-                pool = Pool()
-                logger.info('preprocess %i documents with %i workers' % (len(docs), pool._processes))
+                if sys.version_info[0] == 3:
+                    from multiprocessing import Pool
+                    pool = Pool()
+                    n_processes = pool._processes
+                else:
+                    logger.info('use pathos for multiprocessing')
+                    from pathos.multiprocessing import ProcessingPool
+                    pool = ProcessingPool()
+                    n_processes = pool.nodes
+                logger.info('preprocess %i documents with %i workers' % (len(docs), n_processes))
                 docs_preprocess = pool.map(self.preprocess, docs)
         else:
             logger.info('no prepocess function apply')
