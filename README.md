@@ -64,7 +64,7 @@ recommend_model = ScienceConcierge(stemming=True, ngram_range=(1,1),
                                    n_components=200, n_recommend=200,
                                    verbose=True)
 recommend_model.fit(docs) # input list of documents or abstracts
-index = recommend_model.recommend(likes=[10000], dislikes=[]) # index of like/dislike docs
+index = recommend_model.recommend(likes=[10000], dislikes=[]) # input list of like/dislike index
 docs_recommend = [titles[i] for i in index[0:10]] # recommended documents
 ```
 
@@ -85,7 +85,7 @@ we can use `fit_document_matrix` method directly.
 ```python
 recommend_model = ScienceConcierge(n_components=200, n_recommend=200)
 recommend_model.fit_document_matrix(X)
-index = recommend_model.recommend(likes=[10000], dislikes=[]) # i love this recommended result
+index = recommend_model.recommend(likes=[10000], dislikes=[])
 ```
 
 ## Dependencies

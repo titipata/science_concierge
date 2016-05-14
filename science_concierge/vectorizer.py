@@ -6,9 +6,13 @@ from sklearn.utils.validation import check_is_fitted
 
 class LogEntropyVectorizer(CountVectorizer):
     """Log-entropy vectorizer
-    adds on for scikit-learn CountVectorizer to
+    Convert collection of raw documents to matrix of log-entropy features
+
+    Adds on functionality for scikit-learn CountVectorizer to
     calculate log-entropy term matrix
 
+    Log-entropy 
+    -----------
     Assume we have term i in document j can be calculated as follows
     Global entropy
         p_ij = f_ij / sum_j(f_ij)
@@ -25,18 +29,52 @@ class LogEntropyVectorizer(CountVectorizer):
 
     Parameters
     ----------
-    See CountVectorizer for details explanations
-    lowercase: boolean, if True, text will be considered in lowercase
-    preprocessor: default None
-    stop_words: None or 'english', if 'english', it will remove all
-        English stop words
-    ngram_range: tuple, (1,1) for unigram and (1,2) for bigram
-    max_df: float range [0, 1]
-    min_df: float range [0, 1]
-    norm: 'l2' or None, if 'l2', it will normalize matrix using l2-norm
-    smooth_idf: None for now
+    encoding : string, 'utf-8' by default.
+        If bytes or files are given to analyze, this encoding is used to
+        decode.
 
-    example:
+    decode_error : {'strict', 'ignore', 'replace'}
+        Instruction on what to do if a byte sequence is given to analyze that
+        contains characters not of the given `encoding`. By default, it is
+        'strict', meaning that a UnicodeDecodeError will be raised. Other
+        values are 'ignore' and 'replace'.
+
+    ngram_range : tuple (min_n, max_n)
+        The lower and upper boundary of the range of n-values for different
+        n-grams to be extracted. All values of n such that min_n <= n <= max_n
+        will be used.
+
+    stop_words : string {'english'}, list, or None (default)
+
+    lowercase : boolean, default True
+        Convert all characters to lowercase before tokenizing.
+
+    token_pattern : string
+        Regular expression denoting what constitutes a "token", only used
+        if ``analyzer == 'word'``. The default regexp selects tokens of 2
+        or more alphanumeric characters (punctuation is completely ignored
+        and always treated as a token separator).
+
+    max_df: float in range [0, 1] or int, default=1.0
+
+    min_df: float in range [0, 1] or int, default=1
+
+    norm : 'l1', 'l2' or None, optional
+        Norm used to normalize term vectors. None for no normalization.
+
+    smooth_idf: boolean, default=False
+
+    See also
+    --------
+    CountVectorizer
+        Tokenize the documents and count the occurrences of token and return
+        them as a sparse matrix
+    TfidfTransformer
+        Apply Term Frequency Inverse Document Frequency normalization to a
+        sparse matrix of occurrence counts.
+
+    Example
+    -------
     >> import LogEntropyVectorizer
     >> model = LogEntropyVectorizer(norm=None, ngram_range=(1,1))
     >> docs = ['this this this book',
@@ -44,26 +82,34 @@ class LogEntropyVectorizer(CountVectorizer):
                'cat good shit']
     >> X = model.fit_transform(docs)
 
-    reference:
+    References
+    ----------
         - https://en.wikipedia.org/wiki/Latent_semantic_indexing
         - http://webpages.ursinus.edu/akontostathis/KontostathisHICSSFinal.pdf
     """
-    def __init__(self, lowercase=True, preprocessor=None, tokenizer=None,
-                 stop_words=None, token_pattern='(?u)\\b\\w\\w+\\b',
-                 ngram_range=(1, 1), analyzer='word', max_df=1.0, min_df=1,
-                 norm='l2', smooth_idf=False):
+    def __init__(self, encoding='utf-8', decode_error='strict',
+                 lowercase=True, preprocessor=None, tokenizer=None,
+                 analyzer='word', stop_words=None, token_pattern='(?u)\b\w\w+\b',
+                 vocabulary=None, binary=False,
+                 ngram_range=(1, 1), max_df=1.0, min_df=1,
+                 max_features=None, norm='l2', smooth_idf=False):
 
 
         super(LogEntropyVectorizer, self).__init__(
+            encoding=encoding,
+            decode_error=decode_error,
             lowercase=lowercase,
             preprocessor=preprocessor,
             tokenizer=tokenizer,
+            analyzer=analyzer,
             stop_words=stop_words,
             token_pattern=token_pattern,
             ngram_range=ngram_range,
-            analyzer=analyzer,
             max_df=max_df,
-            min_df=min_df
+            min_df=min_df,
+            max_features=max_features,
+            vocabulary=vocabulary,
+            binary=binary,
         )
 
         self.norm = norm
@@ -71,6 +117,17 @@ class LogEntropyVectorizer(CountVectorizer):
 
 
     def fit(self, raw_documents, y=None):
+        """Learn vocabulary and log-entropy from training set.
+
+        Parameters
+        ----------
+        raw_documents : iterable
+            an iterable which yields either str, unicode or file objects
+
+        Returns
+        -------
+        self : LogEntropyVectorizer
+        """
         X = super(LogEntropyVectorizer, self).fit_transform(raw_documents)
 
         n_samples, n_features = X.shape
