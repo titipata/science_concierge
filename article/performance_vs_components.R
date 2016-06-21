@@ -13,14 +13,16 @@ experiments <- melt(read.csv('data//components_vs_distance.csv'),
                     id.vars = c('poster_number', 'distance', 'n_components'))
 
 pdf('figures/performance_vs_components.pdf', width=5, height=3)
-ggplot(experiments, aes(x = n_components, y = distance))  + 
-  mean_point + 
-  mean_line + 
-  se_error + 
+ggplot(experiments, aes(x = n_components, y = distance))  +
+  mean_point +
+  mean_line +
+  se_error +
   scale_color_brewer(palette = 6, type = 'qual', name = 'Algorithm') +
-  ylab('Topic distance') +
+  ylab('Average human curated topic distance') +
   xlab('Number of components') +
   theme_classic() +
+  theme(axis.line.x = element_line(color="black", size = 0.5),
+        axis.line.y = element_line(color="black", size = 0.5))
   coord_cartesian(xlim=c(0, 550))
 
 dev.off()
