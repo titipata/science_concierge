@@ -68,10 +68,11 @@ index = recommend_model.recommend(likes=[10000], dislikes=[]) # input list of li
 docs_recommend = [titles[i] for i in index[0:10]] # recommended documents
 ```
 
-## Log-entropy vectorizer
+## Vectorizer available
 
-We also have adds on log-entropy class for calculating log-entropy
-matrix from input list of documents. Here is an example usage.
+We have adds on vectorizer classes including `LogEntropyVectorizer` and
+`BM25Vectorizer` for calculating documents-terms weighting from input
+list of documents. Here is an example usage.
 
 ```python
 from science_concierge import LogEntropyVectorizer

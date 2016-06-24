@@ -168,13 +168,46 @@ class BM25Vectorizer(CountVectorizer):
 
     Parameters
     ----------
+    encoding : string, 'utf-8' by default.
+        If bytes or files are given to analyze, this encoding is used to
+        decode.
+
+    decode_error : {'strict', 'ignore', 'replace'}
+        Instruction on what to do if a byte sequence is given to analyze that
+        contains characters not of the given `encoding`. By default, it is
+        'strict', meaning that a UnicodeDecodeError will be raised. Other
+        values are 'ignore' and 'replace'.
+
+    ngram_range : tuple (min_n, max_n)
+        The lower and upper boundary of the range of n-values for different
+        n-grams to be extracted. All values of n such that min_n <= n <= max_n
+        will be used.
+
+    stop_words : string {'english'}, list, or None (default)
+
+    lowercase : boolean, default True
+        Convert all characters to lowercase before tokenizing.
+
+    token_pattern : string
+        Regular expression denoting what constitutes a "token", only used
+        if ``analyzer == 'word'``. The default regexp selects tokens of 2
+        or more alphanumeric characters (punctuation is completely ignored
+        and always treated as a token separator).
+
+    max_df : float in range [0, 1] or int, default=1.0
+
+    min_df : float in range [0, 1] or int, default=1
+
     b : float, default 0.75
+        parameter for Okapi BM25
 
     k1 : float, suggested value from [1.2, 2.0]
+        parameter for Okapi BM25
 
     References
     ----------
         - Okapi BM25 https://en.wikipedia.org/wiki/Okapi_BM25
+        - Introduction to Information Retrieval http://nlp.stanford.edu/IR-book/essir2011/pdf/11prob.pdf
 
     """
     def __init__(self, encoding='utf-8', decode_error='strict',
