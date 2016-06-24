@@ -179,7 +179,7 @@ class BM25Vectorizer(CountVectorizer):
     """
     def __init__(self, encoding='utf-8', decode_error='strict',
                  lowercase=True, preprocessor=None, tokenizer=None,
-                 analyzer='word', stop_words=None, token_pattern='(?u)\b\w\w+\b',
+                 analyzer='word', stop_words=None, token_pattern=r'(?u)\b\w\w+\b',
                  vocabulary=None, binary=False,
                  ngram_range=(1, 1), max_df=1.0, min_df=1,
                  max_features=None, b=0.75, k1=1.5):
@@ -211,7 +211,7 @@ class BM25Vectorizer(CountVectorizer):
         n_samples, n_features = X.shape
         doc_len = np.ravel(X.sum(axis=1))
         avg_len = doc_len.mean()
-        len_norm = 1.0 - b + (b * doc_len / avg_len)
+        len_norm = 1.0 - self.b + (self.b * doc_len / avg_len)
         idf = np.log(float(n_samples) / (1 + np.bincount(X.col)))
-        X.data = X.data * (k1 + 1.0) / (k1 * len_norm[X.row] + X.data) * idf[X.col]
+        X.data = X.data * (self.k1 + 1.0) / (self.k1 * len_norm[X.row] + X.data) * idf[X.col]
         return X.tocsr()
