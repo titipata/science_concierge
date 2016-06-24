@@ -11,7 +11,7 @@ class LogEntropyVectorizer(CountVectorizer):
     Adds on functionality for scikit-learn CountVectorizer to
     calculate log-entropy term matrix
 
-    Log-entropy 
+    Log-entropy
     -----------
     Assume we have term i in document j can be calculated as follows
     Global entropy
@@ -55,9 +55,9 @@ class LogEntropyVectorizer(CountVectorizer):
         or more alphanumeric characters (punctuation is completely ignored
         and always treated as a token separator).
 
-    max_df: float in range [0, 1] or int, default=1.0
+    max_df : float in range [0, 1] or int, default=1.0
 
-    min_df: float in range [0, 1] or int, default=1
+    min_df : float in range [0, 1] or int, default=1
 
     norm : 'l1', 'l2' or None, optional
         Norm used to normalize term vectors. None for no normalization.
@@ -75,7 +75,6 @@ class LogEntropyVectorizer(CountVectorizer):
 
     Example
     -------
-    >> import LogEntropyVectorizer
     >> model = LogEntropyVectorizer(norm=None, ngram_range=(1,1))
     >> docs = ['this this this book',
                'this cat good',
@@ -161,3 +160,58 @@ class LogEntropyVectorizer(CountVectorizer):
         if self.norm is not None:
             L = normalize(L, norm=self.norm, copy=False)
         return L
+
+
+class BM25Vectorizer(CountVectorizer):
+    """
+    Implementation of Okapi BM25
+
+    Parameters
+    ----------
+    b : float, default 0.75
+
+    k1 : float, suggested value from [1.2, 2.0]
+
+    References
+    ----------
+        - Okapi BM25 https://en.wikipedia.org/wiki/Okapi_BM25
+
+    """
+    def __init__(self, encoding='utf-8', decode_error='strict',
+                 lowercase=True, preprocessor=None, tokenizer=None,
+                 analyzer='word', stop_words=None, token_pattern='(?u)\b\w\w+\b',
+                 vocabulary=None, binary=False,
+                 ngram_range=(1, 1), max_df=1.0, min_df=1,
+                 max_features=None, b=0.75, k1=1.5):
+
+        super(BM25Vectorizer, self).__init__(
+            encoding=encoding,
+            decode_error=decode_error,
+            lowercase=lowercase,
+            preprocessor=preprocessor,
+            tokenizer=tokenizer,
+            analyzer=analyzer,
+            stop_words=stop_words,
+            token_pattern=token_pattern,
+            ngram_range=ngram_range,
+            max_df=max_df,
+            min_df=min_df,
+            max_features=max_features,
+            vocabulary=vocabulary,
+            binary=binary,
+        )
+
+        self.b = b
+        self.k1 = k1
+
+    def fit_transform(self, raw_documents, y=None):
+
+        X = super(BM25Vectorizer, self).fit_transform(raw_documents)
+        X = X.tocoo()
+        n_samples, n_features = X.shape
+        doc_len = np.ravel(X.sum(axis=1))
+        avg_len = doc_len.mean()
+        len_norm = 1.0 - b + (b * doc_len / avg_len)
+        idf = np.log(float(n_samples) / (1 + np.bincount(X.col)))
+        X.data = X.data * (k1 + 1.0) / (k1 * len_norm[X.row] + X.data) * idf[X.col]
+        return X.tocsr()
