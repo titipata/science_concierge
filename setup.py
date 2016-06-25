@@ -24,5 +24,5 @@ if __name__ == "__main__":
         keywords = "recommendation system, Latent Semantic Analysis",
         url = "https://github.com/titipata/science_concierge",
         long_description=read('README.md'),
-        packages=['science_concierge'],
+        packages=['science_concierge', 'science_concierge.hkm_nn'],
     )
