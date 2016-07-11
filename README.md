@@ -6,7 +6,7 @@ Science Concierge is an backend algorithm for Scholarfy
 [www.scholarfy.net](http://www.scholarfy.net/),
 an automatic scheduler for conference.
 
-See full article on [Arxiv](http://arxiv.org/abs/1604.01070) or full tex manuscript and
+See full article on [PLOS ONE](http://journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0158423),  [Arxiv](http://arxiv.org/abs/1604.01070) or full tex manuscript and
 presentation [here](https://github.com/titipata/science_concierge_manuscript). You can also see
 the scale version of Scholarfy to 14.3M articles from Pubmed
 at [pubmed.scholarfy.net](http://pubmed.scholarfy.net/).
