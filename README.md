@@ -76,7 +76,8 @@ list of documents. Here is an example usage.
 
 ```python
 from science_concierge import LogEntropyVectorizer
-l_model = LogEntropyVectorizer(norm=None, ngram_range=(1,2))
+l_model = LogEntropyVectorizer(norm=None, ngram_range=(1,2),
+                               stop_words='english', min_df=1, max_df=0.8)
 X = l_model.fit_transform(docs) # where docs is list of documents
 ```
 

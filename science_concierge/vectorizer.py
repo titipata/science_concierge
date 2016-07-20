@@ -88,7 +88,7 @@ class LogEntropyVectorizer(CountVectorizer):
     """
     def __init__(self, encoding='utf-8', decode_error='strict',
                  lowercase=True, preprocessor=None, tokenizer=None,
-                 analyzer='word', stop_words=None, token_pattern='(?u)\b\w\w+\b',
+                 analyzer='word', stop_words=None, token_pattern=r"(?u)\b\w\w+\b",
                  vocabulary=None, binary=False,
                  ngram_range=(1, 1), max_df=1.0, min_df=1,
                  max_features=None, norm='l2', smooth_idf=False):
@@ -212,7 +212,7 @@ class BM25Vectorizer(CountVectorizer):
     """
     def __init__(self, encoding='utf-8', decode_error='strict',
                  lowercase=True, preprocessor=None, tokenizer=None,
-                 analyzer='word', stop_words=None, token_pattern=r'(?u)\b\w\w+\b',
+                 analyzer='word', stop_words=None, token_pattern=r"(?u)\b\w\w+\b",
                  vocabulary=None, binary=False,
                  ngram_range=(1, 1), max_df=1.0, min_df=1,
                  max_features=None, b=0.75, k1=1.5):
