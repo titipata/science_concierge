@@ -103,17 +103,9 @@ index = recommend_model.recommend(likes=[10000], dislikes=[])
 - [unidecode](https://pypi.python.org/pypi/Unidecode)
 - [nltk](http://www.nltk.org/) with white space tokenizer and Porter stemmer, <br>
   use `science_concierge.download_nltk()` to download required corpora
-- [regular expression](https://docs.python.org/2/library/re.html)
 - [scikit-learn](http://scikit-learn.org/)
 - [cachetools](http://pythonhosted.org/cachetools/)
 - [joblib](http://pythonhosted.org/joblib/)
-- [pathos](https://github.com/uqfoundation/pathos)
-
-To install all dependencies we provide `requirements.txt` where we can install using `pip`,
-
-```bash
-$ pip install -r requirements.txt
-```
 
 ## Members
 
