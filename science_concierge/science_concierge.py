@@ -167,13 +167,11 @@ class ScienceConcierge:
                     from multiprocessing import Pool
                     pool = Pool()
                     n_processes = pool._processes
+                    docs_preprocess = pool.map(self.preprocess, docs)
+                    logger.info('preprocess %i documents with %i workers' % (len(docs), n_processes))
                 else:
-                    logger.info('use pathos for multiprocessing')
-                    from pathos.multiprocessing import ProcessingPool
-                    pool = ProcessingPool()
-                    n_processes = pool.nodes
-                logger.info('preprocess %i documents with %i workers' % (len(docs), n_processes))
-                docs_preprocess = pool.map(self.preprocess, docs)
+                    logger.info('using simple map for preprocessing abstracts')
+                    docs_preprocess = list(map(self.preprocess, docs))
         else:
             logger.info('no prepocess function apply')
             docs_preprocess = docs

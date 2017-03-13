@@ -5,4 +5,3 @@ nltk
 scikit-learn
 cachetools
 joblib
-git+https://github.com/uqfoundation/pathos.git@master

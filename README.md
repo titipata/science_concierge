@@ -19,6 +19,12 @@ First, clone the repository.
 $ git clone https://github.com/titipata/science_concierge
 ```
 
+Install dependencies using `pip`,
+
+```bash
+$ pip install -r requirements.txt
+```
+
 Install the library using `setup.py`,
 
 ```bash
