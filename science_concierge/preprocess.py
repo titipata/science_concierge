@@ -20,14 +20,13 @@ def preprocess(text, stemming=True):
     stemming : boolean, apply Porter stemmer if True,
         default True
     """
-    if isinstance(text, (type(None), float)):
-        text_preprocess = ''
+    text = text or ''
+    text = unidecode(text).lower()
+    text = punct_re.sub(' ', text) # remove punctuation
+    if stemming:
+        words = w_tokenizer.tokenize(text)
+        text_preprocess = ' '.join([stemmer.stem(word) for word in words])
     else:
-        text = unidecode(text).lower()
-        text = punct_re.sub(' ', text) # remove punctuation
-        if stemming:
-            text_preprocess = [stemmer.stem(token) for token in w_tokenizer.tokenize(text)]
-        else:
-            text_preprocess = w_tokenizer.tokenize(text)
-        text_preprocess = ' '.join(text_preprocess)
+        words = w_tokenizer.tokenize(text)
+        text_preprocess = ' '.join([stemmer.stem(word) for word in words])
     return text_preprocess
